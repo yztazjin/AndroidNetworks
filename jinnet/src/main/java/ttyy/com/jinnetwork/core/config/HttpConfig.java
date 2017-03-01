@@ -61,11 +61,15 @@ public class HttpConfig {
         // post content-type
         mPostContentType = PostContentType.ApplicationJson;
         // 网络客户端
-        mClientType = ClientType.URLCONNECTION_CLIENT;
+        mClientType = ClientType.OKHTTP_CLIENT;
     }
 
     public static HttpConfig get(){
         return Holder.INSTANCE;
+    }
+
+    public static HttpConfig create(){
+        return new HttpConfig();
     }
 
     public HttpConfig setConnectTimeOut(long millions){

@@ -35,6 +35,10 @@ public class LoaderConfig extends HttpConfig {
         return Holder.INSTANCE;
     }
 
+    public static LoaderConfig create(){
+        return new LoaderConfig();
+    }
+
     @Override
     public File getCacheDir() {
         return super.getCacheDir();
