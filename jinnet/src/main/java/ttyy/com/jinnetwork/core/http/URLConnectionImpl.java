@@ -87,9 +87,9 @@ public class URLConnectionImpl implements Client {
         return Holder.INSTANCE;
     }
 
-    public static URLConnectionImpl create(){
+    public static URLConnectionImpl create(HttpConfig config){
 
-        return null;
+        return new URLConnectionImpl(config);
     }
 
     @Override

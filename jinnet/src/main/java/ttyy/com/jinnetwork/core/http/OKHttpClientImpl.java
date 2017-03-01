@@ -87,9 +87,9 @@ public class OKHttpClientImpl implements Client {
         return Holder.INSTANCE;
     }
 
-    public static OKHttpClientImpl create() {
+    public static OKHttpClientImpl create(HttpConfig config) {
 
-        return null;
+        return new OKHttpClientImpl(config);
     }
 
     @Override

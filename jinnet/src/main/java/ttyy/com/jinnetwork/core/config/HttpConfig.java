@@ -48,7 +48,7 @@ public class HttpConfig {
         static HttpConfig INSTANCE = new HttpConfig();
     }
 
-    private HttpConfig(){
+    protected HttpConfig(){
         // 连接超时15s
         mConnectTimeOut = 15 * 1000;
         // 读取超时60s

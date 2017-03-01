@@ -3,8 +3,10 @@ package ttyy.com.jinnetwork.core.work.method_post;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.InputStream;
 
 import ttyy.com.jinnetwork.core.callback.HttpCallback;
+import ttyy.com.jinnetwork.core.http.base.Client;
 import ttyy.com.jinnetwork.core.http.base.ClientType;
 import ttyy.com.jinnetwork.core.work.HttpMethod;
 import ttyy.com.jinnetwork.core.work.HttpRequestBuilder;
@@ -87,6 +89,21 @@ public class HttpRequestPostBuilder extends HttpRequestBuilder {
     @Override
     public HttpRequestPostBuilder setClientType(ClientType type) {
         return (HttpRequestPostBuilder)super.setClientType(type);
+    }
+
+    @Override
+    public HttpRequestPostBuilder setRequestClient(Client client){
+        return (HttpRequestPostBuilder)super.setRequestClient(client);
+    }
+
+    @Override
+    public HttpRequestPostBuilder setResponseStream(InputStream is){
+        return (HttpRequestPostBuilder)super.setResponseStream(is);
+    }
+
+    @Override
+    public HttpRequestPostBuilder setResponseFile(File file){
+        return (HttpRequestPostBuilder)super.setResponseFile(file);
     }
 
     @Override

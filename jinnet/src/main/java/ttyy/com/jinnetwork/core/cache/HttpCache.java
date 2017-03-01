@@ -1,5 +1,7 @@
 package ttyy.com.jinnetwork.core.cache;
 
+import ttyy.com.jinnetwork.core.work.HTTPRequest;
+
 /**
  * author: admin
  * date: 2017/02/27
@@ -10,8 +12,13 @@ package ttyy.com.jinnetwork.core.cache;
 
 public class HttpCache {
 
-    private HttpCache(){
+    protected HttpCache(){
 
+    }
+
+    public boolean isCacheHit(HTTPRequest request){
+
+        return false;
     }
 
 }

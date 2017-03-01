@@ -66,8 +66,8 @@ public class ApacheHttpClientImpl implements Client {
         return Holder.INSTANCE;
     }
 
-    public static ApacheHttpClientImpl create() {
-        return null;
+    public static ApacheHttpClientImpl create(HttpConfig config) {
+        return new ApacheHttpClientImpl(config);
     }
 
     @Override

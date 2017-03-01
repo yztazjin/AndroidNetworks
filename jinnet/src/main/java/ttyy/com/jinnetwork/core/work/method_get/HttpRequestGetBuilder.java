@@ -2,8 +2,10 @@ package ttyy.com.jinnetwork.core.work.method_get;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import ttyy.com.jinnetwork.core.callback.HttpCallback;
+import ttyy.com.jinnetwork.core.http.base.Client;
 import ttyy.com.jinnetwork.core.http.base.ClientType;
 import ttyy.com.jinnetwork.core.work.HttpMethod;
 import ttyy.com.jinnetwork.core.work.HttpRequestBuilder;
@@ -78,6 +80,21 @@ public class HttpRequestGetBuilder extends HttpRequestBuilder {
     @Override
     public HttpRequestGetBuilder setClientType(ClientType type) {
         return (HttpRequestGetBuilder)super.setClientType(type);
+    }
+
+    @Override
+    public HttpRequestGetBuilder setRequestClient(Client client){
+        return (HttpRequestGetBuilder)super.setRequestClient(client);
+    }
+
+    @Override
+    public HttpRequestGetBuilder setResponseStream(InputStream is){
+        return (HttpRequestGetBuilder)super.setResponseStream(is);
+    }
+
+    @Override
+    public HttpRequestGetBuilder setResponseFile(File file){
+        return (HttpRequestGetBuilder)super.setResponseFile(file);
     }
 
     public HttpRequestGetBuilder setDownloadMode(File file){

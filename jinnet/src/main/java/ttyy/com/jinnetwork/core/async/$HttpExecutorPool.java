@@ -11,9 +11,11 @@ package ttyy.com.jinnetwork.core.async;
 public class $HttpExecutorPool {
 
     $HttpAsyncExecutor mDFTExecutor;
+    $HttpAsyncExecutor mIMGExecutor;
 
     private $HttpExecutorPool(){
         mDFTExecutor = new $HttpAsyncExecutor(50);
+        mIMGExecutor = new $HttpAsyncExecutor(3);
     }
 
     static class Holder{
@@ -30,6 +32,10 @@ public class $HttpExecutorPool {
 
     public $HttpAsyncExecutor getDefaultExecutor(){
         return mDFTExecutor;
+    }
+
+    public $HttpAsyncExecutor getImgExecutor(){
+        return mIMGExecutor;
     }
 
 }

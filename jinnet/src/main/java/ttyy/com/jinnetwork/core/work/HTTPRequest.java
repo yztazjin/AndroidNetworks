@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 
 import ttyy.com.jinnetwork.core.async.$HttpExecutorPool;
+import ttyy.com.jinnetwork.core.async.HttpExecutor;
 import ttyy.com.jinnetwork.core.callback.HttpCallback;
 import ttyy.com.jinnetwork.core.http.ApacheHttpClientImpl;
 import ttyy.com.jinnetwork.core.http.OKHttpClientImpl;
@@ -51,6 +52,10 @@ public class HTTPRequest {
         return builder.getHeadersDict().get(key);
     }
 
+    /**
+     * 获取请求URL
+     * @return
+     */
     public String getRequestURL() {
 
         return builder.getRequestURL();
@@ -61,13 +66,18 @@ public class HTTPRequest {
         return builder.getHttpCallback();
     }
 
+    /**
+     * 获取ContentType
+     * get无效
+     * 单独列出，post根据不同的type，有不同的提交数据行为
+     * @return
+     */
     public PostContentType getContentType() {
         return builder.getContentType();
     }
 
     /**
      * 取消
-     *
      * @return
      */
     public HTTPRequest cancel() {
@@ -84,12 +94,43 @@ public class HTTPRequest {
         return isRequestCanceled;
     }
 
+    /**
+     * 获取下载存储的文件
+     * @return
+     */
     public File getDownloadFile() {
         return builder.getDownloadFile();
     }
 
+    /**
+     * 在当前线程中执行
+     * @return
+     */
     public HTTPResponse request() {
-        Client mClient;
+
+        HTTPResponse rsp = null;
+
+        if(builder.getResponseStreamBytes() != null){
+
+            rsp = readDataFromCustomResponse(builder.getResponseStreamBytes());
+        }else {
+
+            rsp = readDataFromNetwork(getRequestClient());
+        }
+
+        return rsp;
+    }
+
+    /**
+     * 获取网络请求客户端
+     * @return
+     */
+    public Client getRequestClient(){
+        Client mClient = builder.getRequestClient();
+        if(mClient != null){
+            return mClient;
+        }
+
         ClientType mClientType = builder.getClientType();
         if (mClientType == ClientType.APACHE_CLIENT) {
 
@@ -101,6 +142,16 @@ public class HTTPRequest {
 
             mClient = URLConnectionImpl.getInstance();
         }
+
+        return mClient;
+    }
+
+    /**
+     * 从网络请求
+     * @param mClient
+     * @return
+     */
+    private HTTPResponse readDataFromNetwork(Client mClient){
 
         HttpCallback callback = getHttpCallback();
         HTTPResponse rsp = null;
@@ -142,6 +193,45 @@ public class HTTPRequest {
         return rsp;
     }
 
+    /**
+     * 从自定义的Response返回流中获取数据
+     * @return
+     */
+    private HTTPResponse readDataFromCustomResponse(byte[] responseBytes){
+        HttpCallback callback = getHttpCallback();
+        $HttpResponse rsp = new $HttpResponse(this);
+
+        if (callback != null) {
+            callback.onPreStart(this);
+        }
+
+        rsp.setStatusCode(200);
+        rsp.setContentLength(responseBytes.length);
+        rsp.setContentBytes(responseBytes);
+        if (rsp != null) {
+            if (callback != null) {
+                if (rsp.getStatusCode() == 200
+                        || rsp.getStatusCode() == 416
+                        || rsp.getStatusCode() == 206) {
+                    // 416 206 断点续传相关
+                    callback.onSuccess(rsp);
+                } else {
+                    // 出错
+                    callback.onFailure(rsp);
+                }
+            }
+
+            // 回调终点
+            getHttpCallback().onFinish(rsp);
+        }
+
+        return rsp;
+    }
+
+    /**
+     * 异步执行
+     * 立即执行
+     */
     public void requestNowAsync() {
         new Thread(new Runnable() {
             @Override
@@ -151,7 +241,20 @@ public class HTTPRequest {
         }).start();
     }
 
+    /**
+     * 异步执行
+     * 可能需要排队
+     */
     public void requestAsync() {
         $HttpExecutorPool.get().getDefaultExecutor().addRequest(this).start();
+    }
+
+    /**
+     * 异步执行
+     * 可能需要排队
+     * 指定Executor
+     */
+    public void $async(HttpExecutor executor) {
+        executor.addRequest(this).start();
     }
 }

@@ -17,7 +17,7 @@ import ttyy.com.jinnetwork.core.work.HTTPResponse;
  * desc: $HttpAsyncExecutor
  */
 
-public class $HttpAsyncExecutor {
+public class $HttpAsyncExecutor implements HttpExecutor{
 
     private BlockingDeque<HTTPRequest> mWorkers;
     private LinkedList<HTTPRequest> mWaitingWorkers;
@@ -34,6 +34,7 @@ public class $HttpAsyncExecutor {
         mWaitingWorkers = new LinkedList<>();
     }
 
+    @Override
     public $HttpAsyncExecutor addRequest(HTTPRequest request){
         if(mWorkers.size() == mBlockingDequeSize){
             mWaitingWorkers.add(request);
@@ -54,6 +55,7 @@ public class $HttpAsyncExecutor {
         }
     }
 
+    @Override
     public void start(){
         if(isStop
                 || mLoopingThread == null){
