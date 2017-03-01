@@ -1,4 +1,4 @@
-package ttyy.com.jinnetwork;
+package ttyy.com.jinnetwork.core.work.inner;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -8,25 +8,26 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 
 /**
+ * HttpClient
  * 带进度的Http上传 Entity
  * 前置进度，进度不准确
  */
-public class CountingMultipartEntity extends MultipartEntity {
+public class $Apache_CountingMultipartEntity extends MultipartEntity {
 
     private final ProgressListener listener;
 
-    public CountingMultipartEntity(final ProgressListener listener) {
+    public $Apache_CountingMultipartEntity(final ProgressListener listener) {
         super();
         this.listener = listener;
     }
 
-    public CountingMultipartEntity(final HttpMultipartMode mode, final ProgressListener listener) {
+    public $Apache_CountingMultipartEntity(final HttpMultipartMode mode, final ProgressListener listener) {
         super(mode);
         this.listener = listener;
     }
 
-    public CountingMultipartEntity(HttpMultipartMode mode, final String boundary,
-                                   final Charset charset, final ProgressListener listener) {
+    public $Apache_CountingMultipartEntity(HttpMultipartMode mode, final String boundary,
+                                           final Charset charset, final ProgressListener listener) {
         super(mode, boundary, charset);
         this.listener = listener;
     }
