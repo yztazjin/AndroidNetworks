@@ -1,5 +1,6 @@
 package ttyy.com.jinnetwork;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import ttyy.com.jinnetwork.core.config.HttpConfig;
 import ttyy.com.jinnetwork.core.work.method_get.HttpRequestGetBuilder;
 import ttyy.com.jinnetwork.core.work.method_post.HttpRequestPostBuilder;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
+import ttyy.com.jinnetwork.ext_imgloader.ImageCache;
 import ttyy.com.jinnetwork.ext_imgloader.TargetWrapper;
 import ttyy.com.jinnetwork.ext_imgloader.LoaderConfig;
 import ttyy.com.jinnetwork.ext_reflect.APIRequestProxy;
@@ -99,6 +101,13 @@ public class Https {
                 .setRequestClient(LoaderConfig.get().getRequestClient())
                 .setHttpCallback(target);
 
+        if(ImageCache.get().isRuntimeCacheHit(builder.build())){
+            // 内存缓存拿到了
+            Bitmap bm = ImageCache.get().getRuntimeCache(url.hashCode());
+            target.setResponse(bm);
+            return;
+        }
+        
         if (url.startsWith("file://")) {
             url = url.substring(7);
             File mResponseFile = new File(url);
