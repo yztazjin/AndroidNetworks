@@ -18,9 +18,6 @@ import ttyy.com.jinnetwork.core.http.base.Client;
  */
 public class LoaderConfig extends HttpConfig {
 
-    private int mMaxImageWidth;
-    private int mMaxImageHeight;
-
     private Client mRequestClient;
 
     protected LoaderConfig(){
@@ -33,10 +30,6 @@ public class LoaderConfig extends HttpConfig {
 
     public static LoaderConfig get(){
         return Holder.INSTANCE;
-    }
-
-    public static LoaderConfig create(){
-        return new LoaderConfig();
     }
 
     @Override
