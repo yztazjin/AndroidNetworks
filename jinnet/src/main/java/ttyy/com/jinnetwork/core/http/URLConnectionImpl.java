@@ -2,7 +2,6 @@ package ttyy.com.jinnetwork.core.http;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
@@ -24,6 +23,7 @@ import javax.net.ssl.X509TrustManager;
 
 import ttyy.com.jinnetwork.core.config.HttpConfig;
 import ttyy.com.jinnetwork.core.http.base.Client;
+import ttyy.com.jinnetwork.core.http.stream.RequestStringEntity;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 import ttyy.com.jinnetwork.core.work.inner.$Apache_CountingMultipartEntity;
@@ -113,7 +113,7 @@ public class URLConnectionImpl implements Client {
             if(mContentType == PostContentType.ApplicationJson){
 
                 String jsonText = $Converter.toJson(worker).toString();
-                StringEntity requestEntity = new StringEntity(jsonText, "utf-8");
+                RequestStringEntity requestEntity = new RequestStringEntity(jsonText, "utf-8");
 
                 requestEntity.writeTo(os);
 
