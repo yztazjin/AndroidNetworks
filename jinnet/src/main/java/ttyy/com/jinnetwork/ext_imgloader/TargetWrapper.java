@@ -1,11 +1,16 @@
 package ttyy.com.jinnetwork.ext_imgloader;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.io.File;
+import java.io.IOException;
 
 import ttyy.com.jinnetwork.core.callback.HttpUIThreadCallbackAdapter;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
+import ttyy.com.jinnetwork.ext_imgloader.luban_compress.LBC;
 
 /**
  * Author: hjq
@@ -41,8 +46,52 @@ public class TargetWrapper extends HttpUIThreadCallbackAdapter{
         if(mTargetView.getTag().equals(url.hashCode())){
             // 图片文件
             File image_file = response.getHttpRequest().getDownloadFile();
+            Bitmap bm = null;
+            ImageCache.get().setToRuntimCache(url.hashCode(), bm);
+
+            if(LoaderConfig.get().getCacheDir() != null){
+                if(!ImageCache.get().isThumbFile(image_file)){
+                    File thumbDir = new File(LoaderConfig.get().getCacheDir(), "thumb");
+                    File thumbFile = new File(thumbDir, String.valueOf(url.hashCode()));
+                    if(!thumbFile.exists()){
+                        thumbDir.mkdirs();
+                        try {
+                            thumbFile.createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    bm = LBC.getInstance().compressToFile(thumbFile, thumbDir);
+                }else {
+                    bm = LBC.getInstance().compressToBitmap(image_file);
+                }
+
+                setResponse(bm);
+            }
 
         }
-
     }
+
+    public TargetWrapper setPreLoad(Bitmap bm){
+        if(mTargetView instanceof ImageView){
+            ImageView iv = (ImageView) mTargetView;
+            iv.setImageBitmap(bm);
+        }else {
+            mTargetView.setBackground(new BitmapDrawable(bm));
+        }
+
+        return this;
+    }
+
+    public TargetWrapper setResponse(Bitmap bm){
+        if(mTargetView instanceof ImageView){
+            ImageView iv = (ImageView) mTargetView;
+            iv.setImageBitmap(bm);
+        }else {
+            mTargetView.setBackground(new BitmapDrawable(bm));
+        }
+
+        return this;
+    }
+
 }
