@@ -100,8 +100,8 @@ public class ApacheHttpClientImpl implements Client {
         }
 
         mHttpClient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-        mHttpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,2000);//连接时间
-        mHttpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT,2000);//数据传输时间
+        mHttpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,(int)config.getConnectTimeOut());//连接时间
+        mHttpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT,(int)config.getReadTimeOut());//数据传输时间
     }
 
     static class Holder {
