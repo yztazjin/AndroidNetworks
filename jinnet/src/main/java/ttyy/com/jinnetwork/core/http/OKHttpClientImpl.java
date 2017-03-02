@@ -126,7 +126,7 @@ public class OKHttpClientImpl implements Client {
                     StringBuilder sb = new StringBuilder("form-data; name=\"");
                     sb.append(entry.getKey()).append("\"");
                     builder.addPart(Headers.of("Content-Disposition", sb.toString()),
-                            RequestBody.create(MediaType.parse("application/octet-stream"),String.valueOf(entry.getValue())));
+                            RequestBody.create(null ,String.valueOf(entry.getValue())));
                 }
             }
             requestBuilder.post(builder.build());
