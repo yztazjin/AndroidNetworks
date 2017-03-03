@@ -26,9 +26,9 @@ import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
 
 public class HTTPRequest {
 
-    private HttpRequestBuilder builder;
+    protected HttpRequestBuilder builder;
 
-    private boolean isRequestCanceled;
+    protected boolean isRequestCanceled;
 
     protected HTTPRequest(HttpRequestBuilder builder) {
         this.builder = builder;
@@ -216,7 +216,7 @@ public class HTTPRequest {
             try {
                 is.close();
             } catch (IOException e) {
-                
+
             }
         }else {
             rsp.readContentFromStream(is);
