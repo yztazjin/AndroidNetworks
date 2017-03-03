@@ -153,7 +153,7 @@ public class HTTPRequest {
      * @param mClient
      * @return
      */
-    private HTTPResponse readDataFromNetwork(Client mClient){
+    protected final HTTPResponse readDataFromNetwork(Client mClient){
 
         HttpCallback callback = getHttpCallback();
         HTTPResponse rsp = null;
@@ -199,7 +199,7 @@ public class HTTPRequest {
      * 从自定义的Response返回流中获取数据
      * @return
      */
-    private HTTPResponse readDataFromCustomResponse(InputStream is){
+    protected final HTTPResponse readDataFromCustomResponse(InputStream is){
         HttpCallback callback = getHttpCallback();
         $HttpResponse rsp = new $HttpResponse(this);
 
