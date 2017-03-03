@@ -97,8 +97,8 @@ public class HttpRequestPostBuilder extends HttpRequestBuilder {
     }
 
     @Override
-    public HttpRequestPostBuilder setResponseStream(InputStream is){
-        return (HttpRequestPostBuilder)super.setResponseStream(is);
+    public HttpRequestPostBuilder setResponseStream(InputStream is, File tmpFile){
+        return (HttpRequestPostBuilder)super.setResponseStream(is, tmpFile);
     }
 
     @Override
