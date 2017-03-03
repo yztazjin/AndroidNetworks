@@ -1,6 +1,7 @@
 package ttyy.com.jinnetwork.core.work;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Map;
 
 import ttyy.com.jinnetwork.core.async.$HttpExecutorPool;
@@ -110,9 +111,9 @@ public class HTTPRequest {
 
         HTTPResponse rsp = null;
 
-        if(builder.getResponseStreamBytes() != null){
+        if(builder.getResponseStreamFile() != null){
 
-            rsp = readDataFromCustomResponse(builder.getResponseStreamBytes());
+            rsp = readDataFromCustomResponse(builder.getResponseStream());
         }else {
 
             rsp = readDataFromNetwork(getRequestClient());
@@ -197,7 +198,7 @@ public class HTTPRequest {
      * 从自定义的Response返回流中获取数据
      * @return
      */
-    private HTTPResponse readDataFromCustomResponse(byte[] responseBytes){
+    private HTTPResponse readDataFromCustomResponse(InputStream is){
         HttpCallback callback = getHttpCallback();
         $HttpResponse rsp = new $HttpResponse(this);
 
@@ -206,8 +207,15 @@ public class HTTPRequest {
         }
 
         rsp.setStatusCode(200);
-        rsp.setContentLength(responseBytes.length);
-        rsp.setContentBytes(responseBytes);
+        rsp.setContentLength(builder.getResponseStreamFile().length());
+
+        if(getDownloadFile() != null
+                && getDownloadFile().equals(builder.getResponseStreamFile())){
+            // 对同一个文件 不支持同时读写
+
+        }else {
+            rsp.readContentFromStream(is);
+        }
         if (rsp != null) {
             if (callback != null) {
                 if (rsp.getStatusCode() == 200
