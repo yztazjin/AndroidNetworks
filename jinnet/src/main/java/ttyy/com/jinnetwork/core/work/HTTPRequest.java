@@ -1,6 +1,7 @@
 package ttyy.com.jinnetwork.core.work;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -212,7 +213,11 @@ public class HTTPRequest {
         if(getDownloadFile() != null
                 && getDownloadFile().equals(builder.getResponseStreamFile())){
             // 对同一个文件 不支持同时读写
-
+            try {
+                is.close();
+            } catch (IOException e) {
+                
+            }
         }else {
             rsp.readContentFromStream(is);
         }
