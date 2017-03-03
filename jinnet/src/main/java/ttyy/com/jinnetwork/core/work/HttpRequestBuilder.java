@@ -186,6 +186,14 @@ public class HttpRequestBuilder {
     }
 
     /**
+     * 自定义响应文件
+     * @return
+     */
+    public File getResponseStreamFile(){
+        return mResponseStreamFile;
+    }
+
+    /**
      * 包装自定义的响应流
      *
      * @return
