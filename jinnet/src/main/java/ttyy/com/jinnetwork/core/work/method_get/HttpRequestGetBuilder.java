@@ -88,8 +88,8 @@ public class HttpRequestGetBuilder extends HttpRequestBuilder {
     }
 
     @Override
-    public HttpRequestGetBuilder setResponseStream(InputStream is){
-        return (HttpRequestGetBuilder)super.setResponseStream(is);
+    public HttpRequestGetBuilder setResponseStream(InputStream is, File tmpFile){
+        return (HttpRequestGetBuilder)super.setResponseStream(is, tmpFile);
     }
 
     @Override
