@@ -4,22 +4,34 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.File;
 
 import ttyy.com.jinnetwork.Https;
+import ttyy.com.jinnetwork.Images;
 import ttyy.com.jinnetwork.core.callback.HttpUIThreadCallbackAdapter;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    ImageView iv_image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        testDownload();
+        iv_image = (ImageView) findViewById(R.id.iv_image);
+
+
+        String net_uri = "http://img02.tooopen.com/images/20140504/sy_60294738471.jpg";
+        String file_uri = "file://"+Environment.getExternalStorageDirectory().getAbsolutePath()+"/test_bg.jpg";
+        Images.get().source(file_uri)
+                .useCache(true)
+                .placeholder(R.mipmap.ic_launcher)
+                .into(iv_image);
     }
 
     /**

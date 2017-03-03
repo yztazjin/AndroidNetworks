@@ -1,7 +1,5 @@
 package ttyy.com.jinnetwork.core.work.inner;
 
-import android.util.Log;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -136,7 +134,6 @@ public class $HttpResponse implements HTTPResponse {
         File file = request.getDownloadFile();
         long totalLength = 0;
         if(file != null){
-            Log.e("Hjq", "file.length "+file.length());
             totalLength = file.length() + mContentLength;
         }
         try {
@@ -149,7 +146,6 @@ public class $HttpResponse implements HTTPResponse {
                 if(request.isCanceled()){
                     break;
                 }
-
                 if(callback != null){
                     callback.onProgress(this, file.length() , totalLength);
                 }

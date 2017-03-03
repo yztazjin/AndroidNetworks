@@ -1,5 +1,7 @@
 package ttyy.com.jinnetwork.core.work.method_get;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,11 +104,11 @@ public class HttpRequestGetBuilder extends HttpRequestBuilder {
             return this;
 
         if(!file.exists()){
-            file.getParentFile().mkdirs();
+            boolean value = file.getParentFile().mkdirs();
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.w("Https", "setDownloadMode can't create file");
             }
         }else {
             if(file.length() > 0){
