@@ -28,10 +28,13 @@ public class $HttpAsyncExecutor implements HttpExecutor{
 
     private boolean isStop = true;
 
-    protected $HttpAsyncExecutor(int size){
+    private QueueMode mQueueMode;
+
+    protected $HttpAsyncExecutor(int size, QueueMode mode){
         mBlockingDequeSize = size;
         mWorkers = new LinkedBlockingDeque<>(size);
         mWaitingWorkers = new LinkedList<>();
+        mQueueMode  = mode == null ? QueueMode.FirstInFirstOut : mode;
     }
 
     @Override
@@ -39,7 +42,14 @@ public class $HttpAsyncExecutor implements HttpExecutor{
         if(mWorkers.size() == mBlockingDequeSize){
             mWaitingWorkers.add(request);
         }else {
-            mWorkers.add(request);
+            switch (mQueueMode){
+                case FirstInFirstOut:
+                    mWorkers.add(request);
+                    break;
+                case LastInFirstOut:
+                    mWorkers.addFirst(request);
+                    break;
+            }
         }
         return this;
     }
