@@ -101,12 +101,12 @@ public class ImageCache {
     }
 
     public File getDiskCache(String url){
-        if(mDiskCacheDir != null){
+        if(mDiskCacheDir == null){
             return null;
         }
 
         int hashCode = getCacheToken(url);
-        if(hashCode != -1){
+        if(hashCode == -1){
             return null;
         }
 
@@ -147,7 +147,7 @@ public class ImageCache {
             if(!cachedFile.exists()){
                 try {
                     FileOutputStream fos = new FileOutputStream(cachedFile);
-                    bm.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                    bm.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                     fos.flush();
                     fos.close();
                 } catch (FileNotFoundException e) {
