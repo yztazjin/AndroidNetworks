@@ -1,7 +1,5 @@
 package ttyy.com.jinnetwork;
 
-import android.content.Context;
-
 import ttyy.com.jinnetwork.ext_image.HttpRequestImageBuilder;
 import ttyy.com.jinnetwork.ext_image.ImageRequestBuilder;
 
