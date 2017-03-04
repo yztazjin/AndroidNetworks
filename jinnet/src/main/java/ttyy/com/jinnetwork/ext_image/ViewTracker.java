@@ -67,7 +67,7 @@ public class ViewTracker implements HttpCallback {
 
     @Override
     public final void onPreStart(final HTTPRequest request) {
-        Log.d("Images", "url -> "+request.getRequestURL());
+        Log.i("Images", "url -> "+request.getRequestURL());
         if (placeHolderId > 0) {
 
             mHandler.post(new Runnable() {
@@ -83,13 +83,13 @@ public class ViewTracker implements HttpCallback {
     }
 
     @Override
-    public final void onProgress(HTTPResponse request, long cur, long total) {
+    public void onProgress(HTTPResponse request, long cur, long total) {
     }
 
     @Override
     public final void onSuccess(HTTPResponse response) {
         File file = response.getHttpRequest().getDownloadFile();
-        Log.d("Images", "onSuccess "+file.getAbsolutePath());
+        Log.i("Images", "onSuccess "+file.getAbsolutePath());
 
         // 压缩文件
         final Bitmap bm = Compressor.get().compressToBitmap(file);
@@ -122,7 +122,7 @@ public class ViewTracker implements HttpCallback {
 
     @Override
     public final void onFailure(final HTTPResponse response) {
-        Log.d("Images", "onFailure "+response.getErrorMessage());
+        Log.i("Images", "onFailure "+response.getErrorMessage());
         if (errorId > 0) {
             mHandler.post(new Runnable() {
                 @Override
