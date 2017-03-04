@@ -50,7 +50,7 @@ public class Compressor {
         if (scale <= 1 && scale > 0.5625) {
             if (height < 1664) {
                 if (file.length() / 1024 < 150){
-                    return lubanCompressToBitmap(filePath, width, height);
+                    return BitmapFactory.decodeFile(filePath);
                 }
 
             } else if (height >= 1664 && height < 4990) {
@@ -66,7 +66,7 @@ public class Compressor {
             }
         } else if (scale <= 0.5625 && scale > 0.5) {
             if (height < 1280 && file.length() / 1024 < 200){
-                return lubanCompressToBitmap(filePath, width, height);
+                return BitmapFactory.decodeFile(filePath);
             }
 
             int multiple = height / 1280 == 0 ? 1 : height / 1280;
