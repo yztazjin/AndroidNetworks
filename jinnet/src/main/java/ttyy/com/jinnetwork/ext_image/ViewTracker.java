@@ -56,7 +56,7 @@ public class ViewTracker implements HttpCallback {
         mTransition = builder.getTransition();
         mUseCache = builder.isUseCache();
 
-        mSourceTokenURL = ((HttpRequestBuilder) builder).getRequestURL();
+        mSourceTokenURL = builder.getRequestURL();
         if (!TextUtils.isEmpty(mSourceTokenURL)) {
             mSourceToken = mSourceTokenURL.hashCode();
             view.setTag(mSourceToken);
@@ -73,8 +73,7 @@ public class ViewTracker implements HttpCallback {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (view.getTag() != null
-                            && view.getTag().equals(mSourceToken)) {
+                    if (isViewTracked()) {
                         setImageIntoView(placeHolderId);
                     }
                 }
@@ -102,8 +101,7 @@ public class ViewTracker implements HttpCallback {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (view.getTag() != null
-                        && view.getTag().equals(mSourceToken)) {
+                if (isViewTracked()) {
                     // Btimap处理
                     Bitmap future_bm = bm;
                     preSetBitmapIntoView(future_bm);
@@ -127,8 +125,7 @@ public class ViewTracker implements HttpCallback {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (view.getTag() != null
-                            && view.getTag().equals(mSourceToken)) {
+                    if (isViewTracked()) {
                         setImageIntoView(errorId);
                     }
                 }
@@ -170,6 +167,15 @@ public class ViewTracker implements HttpCallback {
 
     protected void afterSetBitmapIntoView(Bitmap bm){
 
+    }
+
+    public boolean isViewTracked(){
+        if (view.getTag() != null
+                && view.getTag().equals(mSourceToken)) {
+            return true;
+        }
+
+        return false;
     }
 
 }
