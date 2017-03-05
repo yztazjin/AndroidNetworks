@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -14,7 +16,6 @@ import java.io.File;
 import ttyy.com.jinnetwork.core.callback.HttpCallback;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
-import ttyy.com.jinnetwork.core.work.HttpRequestBuilder;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
 import ttyy.com.jinnetwork.ext_image.processor.Compressor;
 
@@ -106,6 +107,7 @@ public class ViewTracker implements HttpCallback {
                     Bitmap future_bm = bm;
                     preSetBitmapIntoView(future_bm);
                     setImageIntoView(future_bm);
+                    onImageLoadSuccessAnimation(mAnimId);
                     afterSetBitmapIntoView(future_bm);
                 }
             }
@@ -170,10 +172,27 @@ public class ViewTracker implements HttpCallback {
         }
     }
 
+    /**
+     * 图片加载成功后的动画
+     * @param id
+     */
+    public void onImageLoadSuccessAnimation(int id){
+        Animation anim = AnimationUtils.loadAnimation(view.getContext(), id);
+        view.startAnimation(anim);
+    }
+
+    /**
+     * 加载成功设置图片之前
+     * @param bm
+     */
     public void preSetBitmapIntoView(Bitmap bm){
 
     }
 
+    /**
+     * 加载成功设置图片之后
+     * @param bm
+     */
     public void afterSetBitmapIntoView(Bitmap bm){
 
     }

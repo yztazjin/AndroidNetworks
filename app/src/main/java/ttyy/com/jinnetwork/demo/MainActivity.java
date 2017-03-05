@@ -28,8 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
         String net_uri = "http://img02.tooopen.com/images/20140504/sy_60294738471.jpg";
         String file_uri = "file://"+Environment.getExternalStorageDirectory().getAbsolutePath()+"/test_bg.jpg";
-        Images.get().source(file_uri)
-                .useCache(true)
+        Images.get().source(net_uri)
+                .useCache(false)
+                .anim(android.R.anim.fade_in)
                 .placeholder(R.mipmap.ic_launcher)
                 .into(iv_image);
     }
