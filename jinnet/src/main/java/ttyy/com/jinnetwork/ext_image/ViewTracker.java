@@ -90,8 +90,8 @@ public class ViewTracker implements HttpCallback {
         File file = response.getHttpRequest().getDownloadFile();
         Log.i("Images", "onSuccess "+file.getAbsolutePath());
 
-        // 压缩文件
-        final Bitmap bm = Compressor.get().compressToBitmap(file);
+        // 处理图片
+        final Bitmap bm = decodeFileToBitmap(file);
 
         // 是否需要缓存
         if(mUseCache){
@@ -142,7 +142,16 @@ public class ViewTracker implements HttpCallback {
         return view;
     }
 
-    protected void setImageIntoView(int id) {
+    /**
+     * 解析File
+     * @param file
+     * @return
+     */
+    public Bitmap decodeFileToBitmap(File file){
+        return Compressor.get().compressToBitmap(file);
+    }
+
+    public void setImageIntoView(int id) {
         if (view instanceof ImageView) {
             ((ImageView) view).setImageResource(id);
         } else {
@@ -150,7 +159,7 @@ public class ViewTracker implements HttpCallback {
         }
     }
 
-    protected void setImageIntoView(Bitmap bm) {
+    public void setImageIntoView(Bitmap bm) {
         if(mTransition != null){
             bm = mTransition.translate(bm);
         }
@@ -161,11 +170,11 @@ public class ViewTracker implements HttpCallback {
         }
     }
 
-    protected void preSetBitmapIntoView(Bitmap bm){
+    public void preSetBitmapIntoView(Bitmap bm){
 
     }
 
-    protected void afterSetBitmapIntoView(Bitmap bm){
+    public void afterSetBitmapIntoView(Bitmap bm){
 
     }
 
