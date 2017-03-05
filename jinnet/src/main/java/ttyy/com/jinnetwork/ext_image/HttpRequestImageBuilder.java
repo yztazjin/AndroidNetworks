@@ -1,14 +1,13 @@
 package ttyy.com.jinnetwork.ext_image;
 
-import android.graphics.Bitmap;
-import android.util.Log;
+import android.content.Context;
+import android.text.TextUtils;
+import android.view.View;
 
 import java.io.File;
 
-import ttyy.com.jinnetwork.core.async.$HttpExecutorPool;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
-import ttyy.com.jinnetwork.core.work.HTTPResponse;
-import ttyy.com.jinnetwork.core.work.inner.$HttpResponse;
+import ttyy.com.jinnetwork.core.work.method_get.HttpRequestGetBuilder;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
 
 /**
@@ -16,84 +15,122 @@ import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
  * date: 2017/03/03
  * version: 0
  * mail: secret
- * desc: HttpImageRequest
+ * desc: HttpRequestImageBuilder
  */
 
-class HttpImageRequest extends HTTPRequest {
+public class HttpRequestImageBuilder extends HttpRequestGetBuilder implements ImageRequestBuilder {
 
-    private HttpRequestImageBuilder mImageBuilder;
+    protected boolean mUseCache;
 
-    protected HttpImageRequest(HttpRequestImageBuilder builder) {
-        super(builder);
-        mImageBuilder = builder;
+    protected int mPlaceHolderId;
+
+    protected int mErrorId;
+
+    protected ImageTransition mBitmapTransition;
+
+    protected int mAnimId;
+
+    @Override
+    public ImageRequestBuilder placeholder(int id) {
+        mPlaceHolderId = id;
+        return this;
     }
 
     @Override
-    public HTTPResponse request() {
-        HTTPResponse rsp = null;
-        String uri = getRequestURL();
-        if (uri.startsWith("file://")) {
-            // 本地文件
-            File mResponseFile = builder.getResponseStreamFile();
-
-            if (mResponseFile == null) {
-                uri = uri.substring(7);
-                mResponseFile = new File(uri);
-                builder.setResponseFile(mResponseFile);
-            }
-
-            rsp = readDataFromCustomResponse(builder.getResponseStream());
-        } else {
-
-            rsp = readDataFromNetwork(getRequestClient());
-        }
-
-        return rsp;
+    public int getPlaceHolderResources() {
+        return mPlaceHolderId;
     }
 
     @Override
-    public void requestAsync() {
+    public ImageRequestBuilder error(int id) {
+        mErrorId = id;
+        return this;
+    }
 
-        String uri = getRequestURL();
-        // 是否启用缓存
-        if (mImageBuilder.isUseCache()) {
-            boolean isRuntimeCacheHit = ImageCache.getInstance().isRuntimeCacheHit(uri);
-            Log.i("Images", "isRuntimeCacheHit "+isRuntimeCacheHit);
-            if(isRuntimeCacheHit){
-                getHttpCallback().onPreStart(this);
+    @Override
+    public int getErrorResources() {
+        return mErrorId;
+    }
 
-                ViewTracker tracker = (ViewTracker) getHttpCallback();
+    @Override
+    public ImageRequestBuilder useCache(boolean cache) {
+        mUseCache = cache;
+        return this;
+    }
 
-                Bitmap bm = ImageCache.getInstance().getRuntimeCache(uri);
-                ImageCache.getInstance().setIntoCache(uri, bm);
+    @Override
+    public boolean isUseCache() {
+        return mUseCache;
+    }
 
-                $HttpResponse rsp = new $HttpResponse(this);
-                rsp.setStatusCode(200);
-                rsp.setContentLength(bm.getRowBytes() * bm.getHeight());
+    @Override
+    public ImageRequestBuilder transition(ImageTransition transition) {
+        mBitmapTransition = transition;
+        return this;
+    }
 
-                tracker.setImageIntoView(bm);
-                tracker.onFinish(rsp);
+    @Override
+    public ImageTransition getTransition() {
+        return mBitmapTransition;
+    }
 
-            }else {
-                boolean isDiskCacheHit = ImageCache.getInstance().isDiskCacheHit(uri);
-                Log.i("Images", "isDiskCacheHit "+isDiskCacheHit);
-                if(isDiskCacheHit){
+    @Override
+    public ImageRequestBuilder anim(int id) {
+        mAnimId = id;
+        return this;
+    }
 
-                    File sourceFile = ImageCache.getInstance().getDiskCache(uri);
-                    builder.setResponseFile(sourceFile);
-                    $HttpResponse rsp = new $HttpResponse(this);
-                    rsp.setStatusCode(200);
-                    rsp.setContentLength(builder.getResponseStreamFile().length());
+    @Override
+    public int getAnimResources() {
+        return mAnimId;
+    }
 
-                    getHttpCallback().onSuccess(rsp);
-                    getHttpCallback().onFinish(rsp);
+    @Override
+    public ImageRequestBuilder source(String uri) {
+        setRequestURL(uri);
+        return this;
+    }
 
-                    return;
-                }
-            }
+    @Override
+    public ImageRequestBuilder source(File file) {
+        String uri = "file://"+file.getAbsolutePath();
+        setResponseFile(file);
+        return source(uri);
+    }
 
+    @Override
+    public void into(View view) {
+        if(view == null
+                || TextUtils.isEmpty(getRequestURL())){
+            return;
         }
 
-        $HttpExecutorPool.get().getImgExecutor().addRequest(this).start();
+        // 缓存未初始化,初始化
+        if(ImageCache.getInstance().getDiskCacheDir() == null){
+            Context context = view.getContext().getApplicationContext();
+            ImageCache.getInstance().setDiskCacheDir(context);
+        }
+
+        // 没有设置下载地址，设置默认的下载地址
+        if(getDownloadFile() == null){
+            File origin_dir = new File(ImageCache.getInstance().getDiskCacheDir(), "origin");
+            File file = new File(origin_dir,  String.valueOf(getRequestURL().hashCode()));
+            setDownloadMode(file);
+        }
+
+        into(new ViewTracker(view));
+    }
+
+    @Override
+    public void into(ViewTracker tracker) {
+        tracker.loadResouces(this);
+        setHttpCallback(tracker);
+
+        build().requestAsync();
+    }
+
+    @Override
+    public HTTPRequest build() {
+        return new HttpImageRequest(this);
     }
 }
