@@ -140,7 +140,7 @@ public class HttpRequestBuilder {
             for(Map.Entry<String, String> entry : path_params.entrySet()){
                 String key = entry.getKey();
                 String value = entry.getValue();
-                convertedURL.replaceAll(key, value);
+                convertedURL = convertedURL.replace(key, value);
             }
             return convertedURL;
         }
