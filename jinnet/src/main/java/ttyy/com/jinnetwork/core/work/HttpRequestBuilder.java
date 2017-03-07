@@ -1,5 +1,6 @@
 package ttyy.com.jinnetwork.core.work;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
@@ -33,6 +34,7 @@ public class HttpRequestBuilder {
 
     protected Map<String, Object> params = new TreeMap<String, Object>();
     protected Map<String, String> headers = new TreeMap<String, String>();
+    protected Map<String, String> path_params = new TreeMap<>();
 
     protected String mRequestURL;
 
@@ -92,6 +94,11 @@ public class HttpRequestBuilder {
         return this;
     }
 
+    public HttpRequestBuilder addPathParam(String key, String value){
+        path_params.put("{"+key+"}", value);
+        return this;
+    }
+
     public Map<String, String> getHeadersDict() {
         return headers;
     }
@@ -126,6 +133,17 @@ public class HttpRequestBuilder {
     }
 
     public String getRequestURL() {
+        if(!TextUtils.isEmpty(mRequestURL)
+                && path_params.size() > 0){
+            // 路径参数
+            String convertedURL = mRequestURL;
+            for(Map.Entry<String, String> entry : path_params.entrySet()){
+                String key = entry.getKey();
+                String value = entry.getValue();
+                convertedURL.replaceAll(key, value);
+            }
+            return convertedURL;
+        }
         return mRequestURL;
     }
 
