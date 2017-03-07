@@ -31,13 +31,15 @@ public class $AnnoConverter {
     public static HTTPRequest convert(Method method, Object[] args){
 
         String url = null;
-        HttpMethod mHttpMethod = HttpMethod.GET;
 
+        // Default Request Method
+        HttpMethod mHttpMethod = HttpMethod.GET;
+        // Http Request Method GET or POST
         HTTPMethod mHttpMethodAnno = method.getAnnotation(HTTPMethod.class);
         if(mHttpMethodAnno != null){
             mHttpMethod = mHttpMethodAnno.value();
         }
-
+        
         HttpRequestBuilder builder = null;
         switch (mHttpMethod){
             case GET:
@@ -48,16 +50,16 @@ public class $AnnoConverter {
                 break;
         }
 
+        // Class URL
         HTTPUrl mClassRequestURLAnno = method.getDeclaringClass().getAnnotation(HTTPUrl.class);
         if(mClassRequestURLAnno != null){
             builder.setRequestURL(mClassRequestURLAnno.value());
-        }else {
-            HTTPUrl mMethodRequestURLAnno = method.getAnnotation(HTTPUrl.class);
-            if(mMethodRequestURLAnno != null){
-                builder.setRequestURL(mMethodRequestURLAnno.value());
-            }
         }
-
+        // Method URL
+        HTTPUrl mMethodRequestURLAnno = method.getAnnotation(HTTPUrl.class);
+        if(mMethodRequestURLAnno != null){
+            builder.setRequestURL(mMethodRequestURLAnno.value());
+        }
 
         Annotation[][] panos = method.getParameterAnnotations();
 
@@ -67,6 +69,7 @@ public class $AnnoConverter {
             for (int j = 0; j < panos[i].length; j++) {
                 Annotation ano = panos[i][j];
                 if (ano.annotationType().equals(Param.class)) {
+                    // Request Params
                     Param param = (Param) ano;
 
                     if(args[i] == null
@@ -81,10 +84,12 @@ public class $AnnoConverter {
                     }
                     break;
                 } else if (ano.annotationType().equals(Callback.class)) {
+                    // Request Callback
                     HttpCallback callback = (HttpCallback) args[i];
                     builder.setHttpCallback(callback);
                     break;
                 }else if(ano.annotationType().equals(Header.class)){
+                    // Request Header
                     Header header = (Header) ano;
                     if(args[i] == null
                             ||header.value() == null
@@ -98,12 +103,18 @@ public class $AnnoConverter {
                     }
                     break;
                 }else if(ano.annotationType().equals(HTTPUrl.class)){
-
+                    // URL Path
                     if(args[i] != null){
                         builder.setRequestURL(String.valueOf(args[i]));
                     }
 
                     break;
+                }else if(ano.annotationType().equals(Path.class)){
+                    // URL Path Params
+                    Path mPathParam = method.getDeclaringClass().getAnnotation(Path.class);
+                    if(mPathParam != null){
+                        builder.addPathParam(mPathParam.key(), mPathParam.value());
+                    }
                 }
             }
         }
