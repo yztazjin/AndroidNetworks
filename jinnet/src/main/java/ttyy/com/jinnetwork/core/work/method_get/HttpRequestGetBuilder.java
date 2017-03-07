@@ -75,6 +75,11 @@ public class HttpRequestGetBuilder extends HttpRequestBuilder {
     }
 
     @Override
+    public HttpRequestGetBuilder addPathParam(String key, String value){
+        return (HttpRequestGetBuilder)super.addPathParam(key, value);
+    }
+
+    @Override
     public HttpRequestGetBuilder setHttpCallback(HttpCallback callback) {
         return (HttpRequestGetBuilder)super.setHttpCallback(callback);
     }
