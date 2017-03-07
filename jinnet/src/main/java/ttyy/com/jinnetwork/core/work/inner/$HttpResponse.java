@@ -11,7 +11,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import ttyy.com.jinnetwork.core.callback.HttpCallback;
+import ttyy.com.jinnetwork.core.callback.HTTPCallback;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 
@@ -130,7 +130,7 @@ public class $HttpResponse implements HTTPResponse {
     }
 
     private void readContentToFile(InputStream stream){
-        HttpCallback callback = request.getHttpCallback();
+        HTTPCallback callback = request.getHttpCallback();
         File file = request.getDownloadFile();
         long totalLength = 0;
         if(file != null){
@@ -161,7 +161,7 @@ public class $HttpResponse implements HTTPResponse {
     }
 
     private void readContentToBytes(InputStream stream){
-        HttpCallback callback = request.getHttpCallback();
+        HTTPCallback callback = request.getHttpCallback();
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[4096];

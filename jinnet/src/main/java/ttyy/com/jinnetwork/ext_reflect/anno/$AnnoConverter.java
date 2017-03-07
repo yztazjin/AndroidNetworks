@@ -7,12 +7,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import ttyy.com.jinnetwork.Https;
-import ttyy.com.jinnetwork.core.callback.HttpCallback;
+import ttyy.com.jinnetwork.core.callback.HTTPCallback;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
-import ttyy.com.jinnetwork.core.work.HttpMethod;
-import ttyy.com.jinnetwork.core.work.HttpRequestBuilder;
-import ttyy.com.jinnetwork.core.work.method_get.HttpRequestGetBuilder;
-import ttyy.com.jinnetwork.core.work.method_post.HttpRequestPostBuilder;
+import ttyy.com.jinnetwork.core.work.HTTPMethod;
+import ttyy.com.jinnetwork.core.work.HTTPRequestBuilder;
+import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
+import ttyy.com.jinnetwork.core.work.method_post.HTTPRequestPostBuilder;
 
 /**
  * author: admin
@@ -24,24 +24,24 @@ import ttyy.com.jinnetwork.core.work.method_post.HttpRequestPostBuilder;
 
 public class $AnnoConverter {
 
-    private $AnnoConverter(){
+    private $AnnoConverter() {
 
     }
 
-    public static HTTPRequest convert(Method method, Object[] args){
+    public static HTTPRequest convert(Method method, Object[] args) {
 
         String url = null;
 
-        // Default Request Method
-        HttpMethod mHttpMethod = HttpMethod.GET;
-        // Http Request Method GET or POST
-        HTTPMethod mHttpMethodAnno = method.getAnnotation(HTTPMethod.class);
-        if(mHttpMethodAnno != null){
+        // Default Request MethodType
+        HTTPMethod mHttpMethod = HTTPMethod.GET;
+        // Http Request MethodType GET or POST
+        MethodType mHttpMethodAnno = method.getAnnotation(MethodType.class);
+        if (mHttpMethodAnno != null) {
             mHttpMethod = mHttpMethodAnno.value();
         }
-        
-        HttpRequestBuilder builder = null;
-        switch (mHttpMethod){
+
+        HTTPRequestBuilder builder = null;
+        switch (mHttpMethod) {
             case GET:
                 builder = Https.get(url);
                 break;
@@ -52,12 +52,12 @@ public class $AnnoConverter {
 
         // Class URL
         HTTPUrl mClassRequestURLAnno = method.getDeclaringClass().getAnnotation(HTTPUrl.class);
-        if(mClassRequestURLAnno != null){
+        if (mClassRequestURLAnno != null) {
             builder.setRequestURL(mClassRequestURLAnno.value());
         }
-        // Method URL
+        // MethodType URL
         HTTPUrl mMethodRequestURLAnno = method.getAnnotation(HTTPUrl.class);
-        if(mMethodRequestURLAnno != null){
+        if (mMethodRequestURLAnno != null) {
             builder.setRequestURL(mMethodRequestURLAnno.value());
         }
 
@@ -72,12 +72,12 @@ public class $AnnoConverter {
                     // Request Params
                     Param param = (Param) ano;
 
-                    if(args[i] == null
+                    if (args[i] == null
                             || param.value() == null
-                            || param.value().trim().equals("")){
+                            || param.value().trim().equals("")) {
 
 
-                    }else {
+                    } else {
 
                         String key = param.value();
                         addParam(mHttpMethod, builder, key, args[i]);
@@ -85,34 +85,36 @@ public class $AnnoConverter {
                     break;
                 } else if (ano.annotationType().equals(Callback.class)) {
                     // Request Callback
-                    HttpCallback callback = (HttpCallback) args[i];
-                    builder.setHttpCallback(callback);
+                    if(args[i] instanceof HTTPCallback){
+                        HTTPCallback callback = (HTTPCallback) args[i];
+                        builder.setHttpCallback(callback);
+                    }
                     break;
-                }else if(ano.annotationType().equals(Header.class)){
+                } else if (ano.annotationType().equals(Header.class)) {
                     // Request Header
                     Header header = (Header) ano;
-                    if(args[i] == null
-                            ||header.value() == null
-                            || header.value().trim().equals("")){
+                    if (args[i] == null
+                            || header.value() == null
+                            || header.value().trim().equals("")) {
 
 
-                    }else {
+                    } else {
 
                         String key = header.value();
                         builder.addHeader(key, String.valueOf(args[i]));
                     }
                     break;
-                }else if(ano.annotationType().equals(HTTPUrl.class)){
+                } else if (ano.annotationType().equals(HTTPUrl.class)) {
                     // URL Path
-                    if(args[i] != null){
+                    if (args[i] != null) {
                         builder.setRequestURL(String.valueOf(args[i]));
                     }
 
                     break;
-                }else if(ano.annotationType().equals(Path.class)){
+                } else if (ano.annotationType().equals(Path.class)) {
                     // URL Path Params
                     Path mPathParam = method.getDeclaringClass().getAnnotation(Path.class);
-                    if(mPathParam != null){
+                    if (mPathParam != null) {
                         builder.addPathParam(mPathParam.key(), mPathParam.value());
                     }
                 }
@@ -122,43 +124,25 @@ public class $AnnoConverter {
         return builder.build();
     }
 
-    private static void addParam(HttpMethod method, HttpRequestBuilder builder, String key, Object param){
+    private static void addParam(HTTPMethod method, HTTPRequestBuilder builder, String key, Object param) {
 
         Class mParamType = param.getClass();
-        if(mParamType.equals(Integer.class)
-                || mParamType.equals(int.class)){
-
-            builder.addParam(key, (int)param);
-        }else if(mParamType.equals(Float.class)
-                || mParamType.equals(float.class)){
-
-            builder.addParam(key, (float)param);
-        }else if(mParamType.equals(Double.class)
-                || mParamType.equals(double.class)){
-
-            builder.addParam(key, (double)param);
-        }else if(mParamType.equals(Long.class)
-                || mParamType.equals(long.class)){
-
-            builder.addParam(key, (long)param);
-        }else if(mParamType.equals(String.class)){
-
-            builder.addParam(key, (String)param);
-        }else if(mParamType.equals(File.class)){
+        if (mParamType.equals(File.class)) {
             // get专属
 
-            if(method == HttpMethod.GET){
-                ((HttpRequestGetBuilder)builder).setDownloadMode((File)param);
+            if (method == HTTPMethod.GET) {
+                ((HTTPRequestGetBuilder) builder).setDownloadMode((File) param);
             }
-        }else if(mParamType.equals(JSONObject.class)){
+        } else if (mParamType.equals(JSONObject.class)) {
             // post专属
 
-            if(method == HttpMethod.POST){
-                ((HttpRequestPostBuilder)builder).addParam(key, (JSONObject)param);
+            if (method == HTTPMethod.POST) {
+                ((HTTPRequestPostBuilder) builder).addParam(key, (JSONObject) param);
             }
-        }else {
-            // 其他类型不处理
+        } else {
+            // 其他参数
 
+            builder.addParam(key, param);
         }
 
     }

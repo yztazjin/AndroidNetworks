@@ -1,6 +1,5 @@
 package ttyy.com.jinnetwork.core.http;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -29,12 +28,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import ttyy.com.jinnetwork.core.config.HttpConfig;
+import ttyy.com.jinnetwork.core.config.HTTPConfig;
 import ttyy.com.jinnetwork.core.http.base.Client;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 import ttyy.com.jinnetwork.core.work.inner.$Converter;
 import ttyy.com.jinnetwork.core.work.inner.$HttpResponse;
+import ttyy.com.jinnetwork.core.work.method_post.RequestFileBody;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
 
 /**
@@ -49,7 +49,7 @@ public class OKHttpClientImpl implements Client {
 
     OkHttpClient mOKHttpClient;
 
-    private OKHttpClientImpl(HttpConfig config) {
+    private OKHttpClientImpl(HTTPConfig config) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.cookieJar(new CookieJar() {
             private final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
@@ -79,7 +79,7 @@ public class OKHttpClientImpl implements Client {
     }
 
     static class Holder {
-        static OKHttpClientImpl INSTANCE = new OKHttpClientImpl(HttpConfig.get());
+        static OKHttpClientImpl INSTANCE = new OKHttpClientImpl(HTTPConfig.get());
     }
 
     public static OKHttpClientImpl getInstance() {
@@ -87,7 +87,7 @@ public class OKHttpClientImpl implements Client {
         return Holder.INSTANCE;
     }
 
-    public static OKHttpClientImpl create(HttpConfig config) {
+    public static OKHttpClientImpl create(HTTPConfig config) {
 
         return new OKHttpClientImpl(config);
     }
@@ -115,14 +115,16 @@ public class OKHttpClientImpl implements Client {
 
             MultipartBody.Builder builder = new MultipartBody.Builder();
             for (Map.Entry<String, Object> entry : worker.getParams().entrySet()) {
-                if(entry.getValue() instanceof File){
-                    File file = (File) entry.getValue();
+                if(entry.getValue() instanceof RequestFileBody){
+
+                    RequestFileBody fileBody = (RequestFileBody) entry.getValue();
                     StringBuilder sb = new StringBuilder("form-data; name=\"");
                     sb.append(entry.getKey()).append("\";filename=\"");
-                    sb.append(file.getName()).append("\"");
+                    sb.append(fileBody.getFileNameDesc()).append("\"");
                     builder.addPart(Headers.of("Content-Disposition", sb.toString()),
-                            RequestBody.create(MediaType.parse("application/octet-stream"),file));
+                            RequestBody.create(MediaType.parse("application/octet-stream"),fileBody.getFile()));
                 }else {
+
                     StringBuilder sb = new StringBuilder("form-data; name=\"");
                     sb.append(entry.getKey()).append("\"");
                     builder.addPart(Headers.of("Content-Disposition", sb.toString()),

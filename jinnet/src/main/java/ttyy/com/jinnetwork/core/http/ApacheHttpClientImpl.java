@@ -49,7 +49,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import ttyy.com.jinnetwork.core.config.HttpConfig;
+import ttyy.com.jinnetwork.core.config.HTTPConfig;
 import ttyy.com.jinnetwork.core.http.base.Client;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
@@ -57,6 +57,7 @@ import ttyy.com.jinnetwork.core.work.inner.$Apache_CountingMultipartEntity;
 import ttyy.com.jinnetwork.core.work.inner.$Converter;
 import ttyy.com.jinnetwork.core.work.inner.$HttpResponse;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
+import ttyy.com.jinnetwork.core.work.method_post.RequestFileBody;
 
 /**
  * author: admin
@@ -70,7 +71,7 @@ public class ApacheHttpClientImpl implements Client {
 
     HttpClient mHttpClient;
 
-    private ApacheHttpClientImpl(HttpConfig config) {
+    private ApacheHttpClientImpl(HTTPConfig config) {
         if(config.isIgnoreCertificate()){
             try {
                 KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -105,14 +106,14 @@ public class ApacheHttpClientImpl implements Client {
     }
 
     static class Holder {
-        static ApacheHttpClientImpl INSTANCE = new ApacheHttpClientImpl(HttpConfig.get());
+        static ApacheHttpClientImpl INSTANCE = new ApacheHttpClientImpl(HTTPConfig.get());
     }
 
     public static ApacheHttpClientImpl getInstance() {
         return Holder.INSTANCE;
     }
 
-    public static ApacheHttpClientImpl create(HttpConfig config) {
+    public static ApacheHttpClientImpl create(HTTPConfig config) {
         return new ApacheHttpClientImpl(config);
     }
 
@@ -145,9 +146,10 @@ public class ApacheHttpClientImpl implements Client {
                     }
                 });
                 for (Map.Entry<String, Object> entry : worker.getParams().entrySet()) {
-                    if (entry.getValue() instanceof File) {
+                    if (entry.getValue() instanceof RequestFileBody) {
 
-                        progressHttpEntity.addPart(entry.getKey(), new FileBody((File) entry.getValue()));
+                        RequestFileBody fileBody = (RequestFileBody) entry.getValue();
+                        progressHttpEntity.addPart(entry.getKey(), new FileBody(fileBody.getFile(), fileBody.getFileNameDesc()));
                     } else {
 
                         progressHttpEntity.addPart(entry.getKey(), new StringBody(String.valueOf(entry.getValue())));

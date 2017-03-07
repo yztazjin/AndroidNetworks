@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import ttyy.com.jinnetwork.core.work.HttpMethod;
+import ttyy.com.jinnetwork.core.work.HTTPMethod;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
 
 /**
@@ -13,17 +13,17 @@ import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
  * date: 2017/03/01
  * version: 0
  * mail: secret
- * desc: HTTPMethod
+ * desc: MethodType
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HTTPMethod {
+public @interface MethodType {
 
     /**
      * GET POST
      * @return
      */
-    HttpMethod value();
+    HTTPMethod value();
 
     PostContentType content_type() default PostContentType.ApplicationJson;
 

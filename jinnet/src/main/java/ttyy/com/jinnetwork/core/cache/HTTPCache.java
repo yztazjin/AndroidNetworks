@@ -7,12 +7,12 @@ import ttyy.com.jinnetwork.core.work.HTTPRequest;
  * date: 2017/02/27
  * version: 0
  * mail: secret
- * desc: HttpCache 暂不支持
+ * desc: HTTPCache 暂不支持
  */
 
-public class HttpCache {
+public class HTTPCache {
 
-    protected HttpCache(){
+    protected HTTPCache(){
 
     }
 

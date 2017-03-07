@@ -16,14 +16,14 @@ import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
  * date: 2017/03/03
  * version: 0
  * mail: secret
- * desc: HttpImageRequest
+ * desc: HTTPImageRequest
  */
 
-class HttpImageRequest extends HTTPRequest {
+class HTTPImageRequest extends HTTPRequest {
 
-    private HttpRequestImageBuilder mImageBuilder;
+    private HTTPRequestImageBuilder mImageBuilder;
 
-    protected HttpImageRequest(HttpRequestImageBuilder builder) {
+    protected HTTPImageRequest(HTTPRequestImageBuilder builder) {
         super(builder);
         mImageBuilder = builder;
     }

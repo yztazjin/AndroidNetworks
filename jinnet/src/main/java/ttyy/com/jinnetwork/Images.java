@@ -1,6 +1,6 @@
 package ttyy.com.jinnetwork;
 
-import ttyy.com.jinnetwork.ext_image.HttpRequestImageBuilder;
+import ttyy.com.jinnetwork.ext_image.HTTPRequestImageBuilder;
 import ttyy.com.jinnetwork.ext_image.ImageRequestBuilder;
 
 /**
@@ -20,7 +20,7 @@ public class Images {
     }
 
     public static ImageRequestBuilder get(){
-        return new HttpRequestImageBuilder();
+        return new HTTPRequestImageBuilder();
     }
 
 }

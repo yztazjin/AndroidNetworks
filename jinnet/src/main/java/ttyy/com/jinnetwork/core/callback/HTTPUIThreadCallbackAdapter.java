@@ -8,10 +8,10 @@ import ttyy.com.jinnetwork.core.work.HTTPResponse;
  * date: 2017/02/28
  * version: 0
  * mail: secret
- * desc: HttpUIThreadCallbackAdapter
+ * desc: HTTPUIThreadCallbackAdapter
  */
 
-public class HttpUIThreadCallbackAdapter implements HttpCallback {
+public class HTTPUIThreadCallbackAdapter implements HTTPCallback {
 
     @Override
     public void onPreStart(HTTPRequest request) {

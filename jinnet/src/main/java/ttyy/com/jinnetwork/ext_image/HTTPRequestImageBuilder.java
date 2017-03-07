@@ -7,7 +7,7 @@ import android.view.View;
 import java.io.File;
 
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
-import ttyy.com.jinnetwork.core.work.method_get.HttpRequestGetBuilder;
+import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
 
 /**
@@ -15,10 +15,10 @@ import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
  * date: 2017/03/03
  * version: 0
  * mail: secret
- * desc: HttpRequestImageBuilder
+ * desc: HTTPRequestImageBuilder
  */
 
-public class HttpRequestImageBuilder extends HttpRequestGetBuilder implements ImageRequestBuilder {
+public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements ImageRequestBuilder {
 
     protected boolean mUseCache;
 
@@ -131,6 +131,6 @@ public class HttpRequestImageBuilder extends HttpRequestGetBuilder implements Im
 
     @Override
     public HTTPRequest build() {
-        return new HttpImageRequest(this);
+        return new HTTPImageRequest(this);
     }
 }

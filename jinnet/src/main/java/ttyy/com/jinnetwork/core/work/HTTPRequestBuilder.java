@@ -3,7 +3,6 @@ package ttyy.com.jinnetwork.core.work;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,10 +13,10 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.TreeMap;
 
-import ttyy.com.jinnetwork.core.callback.$HttpUIThreadCallbackAdapterProxy;
-import ttyy.com.jinnetwork.core.callback.HttpCallback;
-import ttyy.com.jinnetwork.core.callback.HttpUIThreadCallbackAdapter;
-import ttyy.com.jinnetwork.core.config.HttpConfig;
+import ttyy.com.jinnetwork.core.callback.$HTTPUIThreadCallbackAdapterProxy;
+import ttyy.com.jinnetwork.core.callback.HTTPCallback;
+import ttyy.com.jinnetwork.core.callback.HTTPUIThreadCallbackAdapter;
+import ttyy.com.jinnetwork.core.config.HTTPConfig;
 import ttyy.com.jinnetwork.core.http.base.Client;
 import ttyy.com.jinnetwork.core.http.base.ClientType;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
@@ -27,20 +26,20 @@ import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
  * date: 2017/02/27
  * version: 0
  * mail: secret
- * desc: HttpRequestBuilder
+ * desc: HTTPRequestBuilder
  */
 
-public class HttpRequestBuilder {
+public class HTTPRequestBuilder {
 
     protected Map<String, Object> params = new TreeMap<String, Object>();
     protected Map<String, String> headers = new TreeMap<String, String>();
-    protected Map<String, String> path_params = new TreeMap<>();
+    protected Map<String, String> path_params = new TreeMap<String, String>();
 
     protected String mRequestURL;
 
-    protected HttpCallback mCallback;
+    protected HTTPCallback mCallback;
 
-    protected HttpMethod mHttpMethod;
+    protected HTTPMethod mHttpMethod;
     protected ClientType mClientType;
     protected Client mRequestClient;
 
@@ -50,52 +49,32 @@ public class HttpRequestBuilder {
      */
     protected File mResponseStreamFile;
 
-    protected HttpRequestBuilder() {
-        mClientType = HttpConfig.get().getClientType();
+    protected HTTPRequestBuilder() {
+        mClientType = HTTPConfig.get().getClientType();
     }
 
-    public HttpRequestBuilder addParam(String key, String value) {
+    public HTTPRequestBuilder addParam(String key, Object value) {
         params.put(key, value);
         return this;
     }
 
-    public HttpRequestBuilder addParam(String key, int value) {
-        params.put(key, value);
-        return this;
-    }
-
-    public HttpRequestBuilder addParam(String key, float value) {
-        params.put(key, value);
-        return this;
-    }
-
-    public HttpRequestBuilder addParam(String key, long value) {
-        params.put(key, value);
-        return this;
-    }
-
-    public HttpRequestBuilder addParam(String key, double value) {
-        params.put(key, value);
-        return this;
-    }
-
-    public HttpRequestBuilder addHeader(String key, String value) {
+    public HTTPRequestBuilder addHeader(String key, String value) {
         headers.put(key, value);
         return this;
     }
 
-    public HttpRequestBuilder removeHeader(String key) {
+    public HTTPRequestBuilder removeHeader(String key) {
         headers.remove(key);
         return this;
     }
 
-    public HttpRequestBuilder removeParam(String key) {
+    public HTTPRequestBuilder removeParam(String key) {
         params.remove(key);
         return this;
     }
 
-    public HttpRequestBuilder addPathParam(String key, String value){
-        path_params.put("{"+key+"}", value);
+    public HTTPRequestBuilder addPathParam(String key, String value) {
+        path_params.put("{" + key + "}", value);
         return this;
     }
 
@@ -107,7 +86,7 @@ public class HttpRequestBuilder {
         return params;
     }
 
-    public HttpRequestBuilder setRequestURL(String url) {
+    public HTTPRequestBuilder setRequestURL(String url) {
         mRequestURL = url;
         return this;
     }
@@ -118,7 +97,7 @@ public class HttpRequestBuilder {
      * @param client
      * @return
      */
-    public HttpRequestBuilder setRequestClient(Client client) {
+    public HTTPRequestBuilder setRequestClient(Client client) {
         mRequestClient = client;
         return this;
     }
@@ -133,11 +112,11 @@ public class HttpRequestBuilder {
     }
 
     public String getRequestURL() {
-        if(!TextUtils.isEmpty(mRequestURL)
-                && path_params.size() > 0){
+        if (!TextUtils.isEmpty(mRequestURL)
+                && path_params.size() > 0) {
             // 路径参数
             String convertedURL = mRequestURL;
-            for(Map.Entry<String, String> entry : path_params.entrySet()){
+            for (Map.Entry<String, String> entry : path_params.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 convertedURL = convertedURL.replace(key, value);
@@ -147,16 +126,16 @@ public class HttpRequestBuilder {
         return mRequestURL;
     }
 
-    public HttpRequestBuilder setHttpCallback(HttpCallback callback) {
-        if (callback instanceof HttpUIThreadCallbackAdapter) {
-            mCallback = $HttpUIThreadCallbackAdapterProxy.get(callback);
+    public HTTPRequestBuilder setHttpCallback(HTTPCallback callback) {
+        if (callback instanceof HTTPUIThreadCallbackAdapter) {
+            mCallback = $HTTPUIThreadCallbackAdapterProxy.get(callback);
         } else {
             mCallback = callback;
         }
         return this;
     }
 
-    public HttpCallback getHttpCallback() {
+    public HTTPCallback getHttpCallback() {
         return mCallback;
     }
 
@@ -164,7 +143,7 @@ public class HttpRequestBuilder {
         return null;
     }
 
-    public HttpRequestBuilder setResponseStream(InputStream is, File tmpFile) {
+    public HTTPRequestBuilder setResponseStream(InputStream is, File tmpFile) {
         if (tmpFile != null) {
 
             try {
@@ -198,16 +177,17 @@ public class HttpRequestBuilder {
      * @param file
      * @return
      */
-    public HttpRequestBuilder setResponseFile(File file) {
+    public HTTPRequestBuilder setResponseFile(File file) {
         mResponseStreamFile = file;
         return this;
     }
 
     /**
      * 自定义响应文件
+     *
      * @return
      */
-    public File getResponseStreamFile(){
+    public File getResponseStreamFile() {
         return mResponseStreamFile;
     }
 
@@ -275,7 +255,7 @@ public class HttpRequestBuilder {
         return null;
     }
 
-    public HttpRequestBuilder setClientType(ClientType type) {
+    public HTTPRequestBuilder setClientType(ClientType type) {
         mClientType = type;
         return this;
     }

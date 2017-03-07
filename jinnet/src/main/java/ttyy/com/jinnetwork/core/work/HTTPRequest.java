@@ -7,7 +7,7 @@ import java.util.Map;
 
 import ttyy.com.jinnetwork.core.async.$HttpExecutorPool;
 import ttyy.com.jinnetwork.core.async.HttpExecutor;
-import ttyy.com.jinnetwork.core.callback.HttpCallback;
+import ttyy.com.jinnetwork.core.callback.HTTPCallback;
 import ttyy.com.jinnetwork.core.http.ApacheHttpClientImpl;
 import ttyy.com.jinnetwork.core.http.OKHttpClientImpl;
 import ttyy.com.jinnetwork.core.http.URLConnectionImpl;
@@ -26,11 +26,11 @@ import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
 
 public class HTTPRequest {
 
-    protected HttpRequestBuilder builder;
+    protected HTTPRequestBuilder builder;
 
     protected boolean isRequestCanceled;
 
-    protected HTTPRequest(HttpRequestBuilder builder) {
+    protected HTTPRequest(HTTPRequestBuilder builder) {
         this.builder = builder;
     }
 
@@ -63,7 +63,7 @@ public class HTTPRequest {
         return builder.getRequestURL();
     }
 
-    public HttpCallback getHttpCallback() {
+    public HTTPCallback getHttpCallback() {
 
         return builder.getHttpCallback();
     }
@@ -155,16 +155,16 @@ public class HTTPRequest {
      */
     protected final HTTPResponse readDataFromNetwork(Client mClient){
 
-        HttpCallback callback = getHttpCallback();
+        HTTPCallback callback = getHttpCallback();
         HTTPResponse rsp = null;
 
         if (callback != null) {
             callback.onPreStart(this);
         }
 
-        if(builder.mHttpMethod == HttpMethod.GET){
+        if(builder.mHttpMethod == HTTPMethod.GET){
             rsp = mClient.get(this);
-        }else if(builder.mHttpMethod == HttpMethod.POST){
+        }else if(builder.mHttpMethod == HTTPMethod.POST){
             rsp = mClient.post(this);
         }else {
             // 没有HttpMethod
@@ -200,7 +200,7 @@ public class HTTPRequest {
      * @return
      */
     protected final HTTPResponse readDataFromCustomResponse(InputStream is){
-        HttpCallback callback = getHttpCallback();
+        HTTPCallback callback = getHttpCallback();
         $HttpResponse rsp = new $HttpResponse(this);
 
         if (callback != null) {

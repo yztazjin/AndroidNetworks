@@ -13,22 +13,22 @@ import java.lang.reflect.Proxy;
  * date: 2017/02/28
  * version: 0
  * mail: secret
- * desc: $HttpUIThreadCallbackAdapterProxy
+ * desc: $HTTPUIThreadCallbackAdapterProxy
  */
 
-public class $HttpUIThreadCallbackAdapterProxy implements InvocationHandler {
+public class $HTTPUIThreadCallbackAdapterProxy implements InvocationHandler {
 
-    HttpCallback real;
+    HTTPCallback real;
     Handler mHandler;
 
-    private $HttpUIThreadCallbackAdapterProxy(HttpCallback real){
+    private $HTTPUIThreadCallbackAdapterProxy(HTTPCallback real){
         this.real = real;
         this.mHandler = new Handler(Looper.getMainLooper());
     }
 
-    public static HttpCallback get(HttpCallback adapter){
-        $HttpUIThreadCallbackAdapterProxy proxy = new $HttpUIThreadCallbackAdapterProxy(adapter);
-        return (HttpCallback)Proxy.newProxyInstance(HttpUIThreadCallbackAdapter.class.getClassLoader(),new Class[]{HttpCallback.class}, proxy);
+    public static HTTPCallback get(HTTPCallback adapter){
+        $HTTPUIThreadCallbackAdapterProxy proxy = new $HTTPUIThreadCallbackAdapterProxy(adapter);
+        return (HTTPCallback)Proxy.newProxyInstance(HTTPUIThreadCallbackAdapter.class.getClassLoader(),new Class[]{HTTPCallback.class}, proxy);
     }
 
     /**

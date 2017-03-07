@@ -5,16 +5,16 @@ package ttyy.com.jinnetwork.core.work;
  * date: 2017/02/28
  * version: 0
  * mail: secret
- * desc: HTTPMethod
+ * desc: MethodType
  */
 
-public enum HttpMethod {
+public enum HTTPMethod {
 
     GET("GET"),
     POST("POST");
 
     String desc;
-    HttpMethod(String value){
+    HTTPMethod(String value){
         desc = value;
     }
 

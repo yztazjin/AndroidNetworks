@@ -10,10 +10,10 @@ import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
  * date: 2017/02/27
  * version: 0
  * mail: secret
- * desc: HttpConfig
+ * desc: HTTPConfig
  */
 
-public class HttpConfig {
+public class HTTPConfig {
 
     /**
      * 连接超时时间
@@ -45,10 +45,10 @@ public class HttpConfig {
     private ClientType mClientType;
 
     static class Holder{
-        static HttpConfig INSTANCE = new HttpConfig();
+        static HTTPConfig INSTANCE = new HTTPConfig();
     }
 
-    protected HttpConfig(){
+    protected HTTPConfig(){
         // 连接超时15s
         mConnectTimeOut = 15 * 1000;
         // 读取超时60s
@@ -64,15 +64,15 @@ public class HttpConfig {
         mClientType = ClientType.OKHTTP_CLIENT;
     }
 
-    public static HttpConfig get(){
+    public static HTTPConfig get(){
         return Holder.INSTANCE;
     }
 
-    public static HttpConfig create(){
-        return new HttpConfig();
+    public static HTTPConfig create(){
+        return new HTTPConfig();
     }
 
-    public HttpConfig setConnectTimeOut(long millions){
+    public HTTPConfig setConnectTimeOut(long millions){
         mConnectTimeOut = millions;
         return this;
     }
@@ -81,7 +81,7 @@ public class HttpConfig {
         return mConnectTimeOut;
     }
 
-    public HttpConfig setReadTimeOut(long millions){
+    public HTTPConfig setReadTimeOut(long millions){
         mReadTimeOut = millions;
         return this;
     }
@@ -90,7 +90,7 @@ public class HttpConfig {
         return mReadTimeOut;
     }
 
-    public HttpConfig setIgnoreCertificate(boolean isIgnore){
+    public HTTPConfig setIgnoreCertificate(boolean isIgnore){
         mIgnoreCertificate = isIgnore;
         return this;
     }
@@ -99,7 +99,7 @@ public class HttpConfig {
         return mIgnoreCertificate;
     }
 
-    public HttpConfig setCacheDir(File file){
+    public HTTPConfig setCacheDir(File file){
         mCacheDirFile = file;
         return this;
     }
@@ -108,7 +108,7 @@ public class HttpConfig {
         return mCacheDirFile;
     }
 
-    public HttpConfig setDebugMode(boolean value){
+    public HTTPConfig setDebugMode(boolean value){
         this.isDebugMode = value;
         return this;
     }
@@ -121,12 +121,12 @@ public class HttpConfig {
         return mPostContentType;
     }
 
-    public HttpConfig setPostConentType(PostContentType type){
+    public HTTPConfig setPostConentType(PostContentType type){
         mPostContentType = type;
         return this;
     }
 
-    public HttpConfig setClientType(ClientType type){
+    public HTTPConfig setClientType(ClientType type){
         mClientType = type;
         return this;
     }

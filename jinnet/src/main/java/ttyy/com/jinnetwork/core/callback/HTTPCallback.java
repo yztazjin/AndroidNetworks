@@ -8,10 +8,10 @@ import ttyy.com.jinnetwork.core.work.HTTPResponse;
  * date: 2017/02/28
  * version: 0
  * mail: secret
- * desc: HttpCallback
+ * desc: HTTPCallback
  */
 
-public interface HttpCallback {
+public interface HTTPCallback {
 
     /**
      * 请求之前

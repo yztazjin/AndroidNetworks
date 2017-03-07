@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import java.io.File;
 
-import ttyy.com.jinnetwork.core.callback.HttpCallback;
+import ttyy.com.jinnetwork.core.callback.HTTPCallback;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
@@ -27,7 +27,7 @@ import ttyy.com.jinnetwork.ext_image.processor.Compressor;
  * desc: ViewTracker
  */
 
-public class ViewTracker implements HttpCallback {
+public class ViewTracker implements HTTPCallback {
 
     Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -50,7 +50,7 @@ public class ViewTracker implements HttpCallback {
         this.view = view;
     }
 
-    public void loadResouces(HttpRequestImageBuilder builder) {
+    public void loadResouces(HTTPRequestImageBuilder builder) {
         placeHolderId = builder.getPlaceHolderResources();
         errorId = builder.getErrorResources();
         mAnimId = builder.getAnimResources();

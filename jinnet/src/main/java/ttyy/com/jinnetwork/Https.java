@@ -2,9 +2,9 @@ package ttyy.com.jinnetwork;
 
 import java.lang.reflect.Proxy;
 
-import ttyy.com.jinnetwork.core.config.HttpConfig;
-import ttyy.com.jinnetwork.core.work.method_get.HttpRequestGetBuilder;
-import ttyy.com.jinnetwork.core.work.method_post.HttpRequestPostBuilder;
+import ttyy.com.jinnetwork.core.config.HTTPConfig;
+import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
+import ttyy.com.jinnetwork.core.work.method_post.HTTPRequestPostBuilder;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
 import ttyy.com.jinnetwork.ext_reflect.APIRequestProxy;
 
@@ -28,9 +28,9 @@ public class Https {
      * @param url
      * @return
      */
-    public static HttpRequestGetBuilder get(String url) {
+    public static HTTPRequestGetBuilder get(String url) {
 
-        return new HttpRequestGetBuilder().setRequestURL(url);
+        return new HTTPRequestGetBuilder().setRequestURL(url);
     }
 
     /**
@@ -40,12 +40,12 @@ public class Https {
      * @param type
      * @return
      */
-    public static HttpRequestPostBuilder post(String url, PostContentType type) {
+    public static HTTPRequestPostBuilder post(String url, PostContentType type) {
         if (type == null) {
-            type = HttpConfig.get().getPostContentType();
+            type = HTTPConfig.get().getPostContentType();
         }
 
-        return new HttpRequestPostBuilder(type).setRequestURL(url);
+        return new HTTPRequestPostBuilder(type).setRequestURL(url);
     }
 
     /**
@@ -54,9 +54,9 @@ public class Https {
      * @param url
      * @return
      */
-    public static HttpRequestPostBuilder post(String url) {
+    public static HTTPRequestPostBuilder post(String url) {
 
-        return post(url, HttpConfig.get().getPostContentType());
+        return post(url, HTTPConfig.get().getPostContentType());
     }
 
     /**

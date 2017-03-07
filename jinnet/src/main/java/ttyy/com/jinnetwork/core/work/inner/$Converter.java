@@ -5,11 +5,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,12 +39,6 @@ public final class $Converter {
             String key = entry.getKey();
             Object value = entry.getValue();
             try {
-
-                if (value instanceof File) {
-                    // json 忽略 文件类型参数
-                    continue;
-                }
-
                 jsonObject.put(key, value);
             } catch (JSONException e) {
                 Log.i("Converter", "JSONError key "+key);
@@ -65,14 +56,15 @@ public final class $Converter {
      */
     public static String toFormParams(HTTPRequest request){
         StringBuilder sb = new StringBuilder();
-        Set<String> keys = request.getParams().keySet();
-        Iterator<String> iterator = keys.iterator();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            sb.append(key)
-                    .append("=")
-                    .append(URLEncoder.encode(request.getParams().get(key).toString()))
-                    .append("&");
+        for(Map.Entry<String, Object> entry : request.getParams().entrySet()){
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if(value != null){
+                sb.append(key)
+                        .append("=")
+                        .append(URLEncoder.encode(value.toString()))
+                        .append("&");
+            }
         }
         String url_params = sb.substring(0, sb.length() - 1);
         return url_params;

@@ -10,7 +10,8 @@ import java.io.File;
 
 import ttyy.com.jinnetwork.Https;
 import ttyy.com.jinnetwork.Images;
-import ttyy.com.jinnetwork.core.callback.HttpUIThreadCallbackAdapter;
+import ttyy.com.jinnetwork.core.callback.HTTPUIThreadCallbackAdapter;
+import ttyy.com.jinnetwork.core.work.HTTPRequestBuilder;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 
 
@@ -25,7 +26,13 @@ public class MainActivity extends AppCompatActivity {
 
         iv_image = (ImageView) findViewById(R.id.iv_image);
 
+        testPathParams();
+    }
 
+    /**
+     * 测试图片下载
+     */
+    void testImages(){
         String net_uri = "http://img02.tooopen.com/images/20140504/sy_60294738471.jpg";
         String file_uri = "file://"+Environment.getExternalStorageDirectory().getAbsolutePath()+"/test_bg.jpg";
         Images.get().source(net_uri)
@@ -43,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         String url = "http://p.gdown.baidu.com/6c0ca4285c9794d112e2a600dc8d8cd7db4d80b16e394bf42beca8141b0661d514479117b88de9964a0667180e8c590b13809f8c37646b6bbc31b861c293ee68fd81c507c8d04dcd382eaf16e69266ee8128413baacbd977ec9722f42e241d3625d0c296a5531300b865ddaed90c5daa07a49d27cd51dceb2bda23508cd6aed0987a5ee890e1aa14";
         Https.get(url)
                 .setDownloadMode(file)
-                .setHttpCallback(new HttpUIThreadCallbackAdapter(){
+                .setHttpCallback(new HTTPUIThreadCallbackAdapter(){
                     @Override
                     public void onProgress(HTTPResponse request, long cur, long total) {
                         super.onProgress(request, cur, total);
@@ -60,5 +67,16 @@ public class MainActivity extends AppCompatActivity {
                 .build()
                 .requestAsync();
 
+    }
+
+    /**
+     * 路径参数
+     */
+    void testPathParams(){
+        HTTPRequestBuilder builder = Https.get("http://{1}.{2}.{3}");
+        builder.addPathParam("1", "wwww")
+                .addPathParam("2", "baidu")
+                .addPathParam("3", "com");
+        Log.d("Https", "url -> "+builder.getRequestURL());
     }
 }
