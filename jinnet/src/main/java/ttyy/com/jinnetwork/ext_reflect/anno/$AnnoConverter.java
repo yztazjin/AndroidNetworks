@@ -51,12 +51,12 @@ public class $AnnoConverter {
         }
 
         // Class URL
-        HTTPUrl mClassRequestURLAnno = method.getDeclaringClass().getAnnotation(HTTPUrl.class);
+        URLPath mClassRequestURLAnno = method.getDeclaringClass().getAnnotation(URLPath.class);
         if (mClassRequestURLAnno != null) {
             builder.setRequestURL(mClassRequestURLAnno.value());
         }
         // MethodType URL
-        HTTPUrl mMethodRequestURLAnno = method.getAnnotation(HTTPUrl.class);
+        URLPath mMethodRequestURLAnno = method.getAnnotation(URLPath.class);
         if (mMethodRequestURLAnno != null) {
             builder.setRequestURL(mMethodRequestURLAnno.value());
         }
@@ -104,18 +104,26 @@ public class $AnnoConverter {
                         builder.addHeader(key, String.valueOf(args[i]));
                     }
                     break;
-                } else if (ano.annotationType().equals(HTTPUrl.class)) {
-                    // URL Path
+                } else if (ano.annotationType().equals(URLPath.class)) {
+                    // URL PathParam
                     if (args[i] != null) {
                         builder.setRequestURL(String.valueOf(args[i]));
                     }
 
                     break;
-                } else if (ano.annotationType().equals(Path.class)) {
-                    // URL Path Params
-                    Path mPathParam = method.getDeclaringClass().getAnnotation(Path.class);
-                    if (mPathParam != null) {
-                        builder.addPathParam(mPathParam.key(), mPathParam.value());
+                } else if (ano.annotationType().equals(PathParam.class)) {
+                    // URL PathParam Params
+                    PathParam mPathParam = method.getDeclaringClass().getAnnotation(PathParam.class);
+
+                    if (args[i] == null
+                            || mPathParam.value() == null
+                            || mPathParam.value().trim().equals("")) {
+
+
+                    } else {
+
+                        String key = mPathParam.value();
+                        builder.addHeader(key, args[i].toString());
                     }
                 }
             }

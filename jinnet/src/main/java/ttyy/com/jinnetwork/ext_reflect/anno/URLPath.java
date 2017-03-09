@@ -10,11 +10,11 @@ import java.lang.annotation.Target;
  * date: 2017/03/01
  * version: 0
  * mail: secret
- * desc: HTTPUrl
+ * desc: URLPath
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HTTPUrl {
+public @interface URLPath {
 
     // url
     String value() default "";
