@@ -185,8 +185,9 @@ public class ViewTracker implements HTTPCallback {
      * 加载成功设置图片之前
      * @param bm
      */
-    public void preSetBitmapIntoView(Bitmap bm){
-
+    public Bitmap preSetBitmapIntoView(Bitmap bm){
+        
+        return bm;
     }
 
     /**
