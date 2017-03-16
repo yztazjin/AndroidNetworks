@@ -89,11 +89,18 @@ public class ViewTracker implements HTTPCallback {
     @Override
     public final void onSuccess(HTTPResponse response) {
         File file = response.getHttpRequest().getDownloadFile();
-        Log.i("Images", "onSuccess "+file.getAbsolutePath());
 
         // 处理图片
         final Bitmap bm = decodeFileToBitmap(file);
 
+        // 解析失败
+        if(bm == null){
+            onFailure(response);
+            return;
+        }
+
+        Log.i("Images", "onSuccess "+file.getAbsolutePath());
+        
         // 是否需要缓存
         if(mUseCache){
             ImageCache.getInstance().setIntoCache(response.getHttpRequest().getRequestURL(), bm);
@@ -122,7 +129,7 @@ public class ViewTracker implements HTTPCallback {
 
     @Override
     public final void onFailure(final HTTPResponse response) {
-        Log.i("Images", "onFailure "+response.getErrorMessage());
+        Log.i("Images", "onFailure "+mSourceTokenURL);
         if (errorId > 0) {
             mHandler.post(new Runnable() {
                 @Override
@@ -161,15 +168,30 @@ public class ViewTracker implements HTTPCallback {
         }
     }
 
-    public void setImageIntoView(Bitmap bm) {
-        if(mTransition != null){
-            bm = mTransition.translate(bm);
+    public void setImageIntoView(final Bitmap bm) {
+
+        if(Looper.myLooper() != Looper.getMainLooper()){
+            // 不在UI主线程
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    setImageIntoView(bm);
+                }
+            });
+        }else {
+            // 在UI主线程
+            Bitmap mSuccessBitmap = bm;
+            if(mTransition != null){
+                mSuccessBitmap = mTransition.translate(bm);
+            }
+
+            if (view instanceof ImageView) {
+                ((ImageView) view).setImageBitmap(mSuccessBitmap);
+            } else {
+                view.setBackgroundDrawable(new BitmapDrawable(mSuccessBitmap));
+            }
         }
-        if (view instanceof ImageView) {
-            ((ImageView) view).setImageBitmap(bm);
-        } else {
-            view.setBackgroundDrawable(new BitmapDrawable(bm));
-        }
+
     }
 
     /**
