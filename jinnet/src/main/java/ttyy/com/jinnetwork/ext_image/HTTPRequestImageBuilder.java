@@ -101,7 +101,7 @@ public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements Im
     @Override
     public void into(View view) {
         if(view == null
-                || TextUtils.isEmpty(getRequestURL())){
+                || TextUtils.isEmpty(getDecoratedRequestURL())){
             return;
         }
 
@@ -114,7 +114,7 @@ public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements Im
         // 没有设置下载地址，设置默认的下载地址
         if(getDownloadFile() == null){
             File origin_dir = new File(ImageCache.getInstance().getDiskCacheDir(), "origin");
-            File file = new File(origin_dir,  String.valueOf(getRequestURL().hashCode()));
+            File file = new File(origin_dir,  String.valueOf(getDecoratedRequestURL().hashCode()));
             setDownloadMode(file);
         }
 

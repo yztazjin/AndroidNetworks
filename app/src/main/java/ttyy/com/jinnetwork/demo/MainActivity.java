@@ -4,42 +4,73 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
+import android.widget.ListView;
+
+import com.google.gson.Gson;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import ttyy.com.jinnetwork.Https;
-import ttyy.com.jinnetwork.Images;
 import ttyy.com.jinnetwork.core.callback.HTTPUIThreadCallbackAdapter;
-import ttyy.com.jinnetwork.core.work.HTTPRequestBuilder;
+import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView iv_image;
+    ListView lv_images;
+    GankIOAdapter adapter;
+
+    ArrayList<GankIOBean.Data> datas;
+
+    int maxIndex = 3;
+    int currIndex = 1;
+
+    Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        iv_image = (ImageView) findViewById(R.id.iv_image);
+        lv_images = (ListView) findViewById(R.id.lv_images);
+        adapter = new GankIOAdapter();
+        lv_images.setAdapter(adapter);
 
-        testPathParams();
+        datas = new ArrayList<>();
+
+        requestGankIODatas();
     }
 
-    /**
-     * 测试图片下载
-     */
-    void testImages(){
-        String net_uri = "http://img02.tooopen.com/images/20140504/sy_60294738471.jpg";
-        String file_uri = "file://"+Environment.getExternalStorageDirectory().getAbsolutePath()+"/test_bg.jpg";
-        Images.get().source(net_uri)
-                .useCache(false)
-                .anim(android.R.anim.fade_in)
-                .placeholder(R.mipmap.ic_launcher)
-                .into(iv_image);
+    void requestGankIODatas(){
+        if(currIndex > maxIndex){
+            adapter.datas = datas;
+            adapter.notifyDataSetChanged();
+        }else {
+            String url = "http://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/{page}";
+            Https.get(url)
+                    .addPathParam("page", currIndex+"")
+                    .setHttpCallback(new HTTPUIThreadCallbackAdapter(){
+                        @Override
+                        public void onPreStart(HTTPRequest request) {
+                            super.onPreStart(request);
+                            Log.d("Https", "url "+request.getRequestURL());
+                        }
+
+                        @Override
+                        public void onSuccess(HTTPResponse response) {
+                            super.onSuccess(response);
+                            GankIOBean bean = gson.fromJson(response.getConentToString(), GankIOBean.class);
+                            if(!bean.error){
+                                currIndex++;
+                                datas.addAll(bean.results);
+                            }
+                            requestGankIODatas();
+                        }
+                    })
+                    .build().requestAsync();
+        }
     }
 
     /**
@@ -69,14 +100,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * 路径参数
-     */
-    void testPathParams(){
-        HTTPRequestBuilder builder = Https.get("http://{1}.{2}.{3}");
-        builder.addPathParam("1", "wwww")
-                .addPathParam("2", "baidu")
-                .addPathParam("3", "com");
-        Log.d("Https", "url -> "+builder.getRequestURL());
-    }
 }

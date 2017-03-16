@@ -108,4 +108,22 @@ public class HTTPRequestGetBuilder extends HTTPRequestBuilder {
     public File getDownloadFile() {
         return mDownloadFile;
     }
+
+    /**
+     * 设置此次请求的唯一标示符
+     * @param token
+     * @return
+     */
+    public HTTPRequestGetBuilder setRequestUniqueToken(Object token){
+        return (HTTPRequestGetBuilder)super.setRequestUniqueToken(token);
+    }
+
+    /**
+     * 设置是否移除相同url的request 此url为包装过的url
+     * @param value
+     * @return
+     */
+    public HTTPRequestGetBuilder setIsEnableRemoveSameRequest(boolean value){
+        return (HTTPRequestGetBuilder)super.setIsEnableRemoveSameRequest(value);
+    }
 }

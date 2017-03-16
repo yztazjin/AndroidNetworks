@@ -14,7 +14,7 @@ public class $HttpExecutorPool {
     $HttpAsyncExecutor mIMGExecutor;
 
     private $HttpExecutorPool(){
-        mDFTExecutor = new $HttpAsyncExecutor(50, QueueMode.FirstInFirstOut);
+        mDFTExecutor = new $HttpAsyncExecutor(20, QueueMode.FirstInFirstOut);
         mIMGExecutor = new $HttpAsyncExecutor(3, QueueMode.LastInFirstOut);
     }
 

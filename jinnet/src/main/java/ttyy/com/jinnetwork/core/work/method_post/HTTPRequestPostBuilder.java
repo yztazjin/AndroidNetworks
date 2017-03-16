@@ -103,8 +103,27 @@ public class HTTPRequestPostBuilder extends HTTPRequestBuilder {
         return (HTTPRequestPostBuilder)super.setResponseFile(file);
     }
 
+    /**
+     * 设置此次请求的唯一标示符
+     * @param token
+     * @return
+     */
+    public HTTPRequestPostBuilder setRequestUniqueToken(Object token){
+        return (HTTPRequestPostBuilder)super.setRequestUniqueToken(token);
+    }
+
+    /**
+     * 设置是否移除相同url的request 此url为包装过的url
+     * @param value
+     * @return
+     */
+    public HTTPRequestPostBuilder setIsEnableRemoveSameRequest(boolean value){
+        return (HTTPRequestPostBuilder)super.setIsEnableRemoveSameRequest(value);
+    }
+
     @Override
     public PostContentType getContentType() {
         return mContentType;
     }
+
 }

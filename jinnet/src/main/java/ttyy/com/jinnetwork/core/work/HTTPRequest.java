@@ -1,5 +1,7 @@
 package ttyy.com.jinnetwork.core.work;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,7 +62,7 @@ public class HTTPRequest {
      */
     public String getRequestURL() {
 
-        return builder.getRequestURL();
+        return builder.getDecoratedRequestURL();
     }
 
     public HTTPCallback getHttpCallback() {
@@ -80,16 +82,28 @@ public class HTTPRequest {
 
     /**
      * 取消
+     * @param isUserCancel  用户是否取消
+     * @return
+     */
+    public HTTPRequest $cancel(boolean isUserCancel) {
+        isRequestCanceled = true;
+        // 用户取消
+        if (getHttpCallback() != null && isUserCancel) {
+            getHttpCallback().onCancel(this);
+            getHttpCallback().onFinish(null);
+        }else {
+            Log.w("Https", "AsyncExecutor Remove It !");
+        }
+        return this;
+    }
+
+    /**
+     * 取消
      * @return
      */
     public HTTPRequest cancel() {
-        isRequestCanceled = true;
-        // 用户取消
-        if (getHttpCallback() != null) {
-            getHttpCallback().onCancel(this);
-            getHttpCallback().onFinish(null);
-        }
-        return this;
+        // 默认为用户取消
+        return $cancel(true);
     }
 
     public boolean isCanceled() {
@@ -269,5 +283,37 @@ public class HTTPRequest {
      */
     public void $async(HttpExecutor executor) {
         executor.addRequest(this).start();
+    }
+
+    public Object getUniqueToken(){
+
+        return builder.getRequestUniqueToken();
+    }
+
+    public boolean isEnableRemoveSameRequest(){
+
+        return builder.isEnableRemoveSameRequest();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof HTTPRequest){
+            HTTPRequest t_obj = (HTTPRequest) obj;
+
+            if(t_obj.isEnableRemoveSameRequest()
+                    && isEnableRemoveSameRequest()){
+                return getUniqueToken().equals(t_obj.getUniqueToken());
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        if(isEnableRemoveSameRequest()){
+
+            return getUniqueToken().hashCode();
+        }
+        return super.hashCode();
     }
 }

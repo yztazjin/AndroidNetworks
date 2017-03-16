@@ -1,6 +1,7 @@
 package ttyy.com.jinnetwork.core.async;
 
 import android.os.Process;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.concurrent.BlockingDeque;
@@ -19,16 +20,16 @@ import ttyy.com.jinnetwork.core.work.HTTPResponse;
 
 public class $HttpAsyncExecutor implements HttpExecutor{
 
-    private BlockingDeque<HTTPRequest> mWorkers;
-    private LinkedList<HTTPRequest> mWaitingWorkers;
+    protected BlockingDeque<HTTPRequest> mWorkers;
+    protected LinkedList<HTTPRequest> mWaitingWorkers;
 
-    private int mBlockingDequeSize;
+    protected int mBlockingDequeSize;
 
-    private LoopingThread mLoopingThread;
+    protected LoopingThread mLoopingThread;
 
-    private boolean isStop = true;
+    protected boolean isStop = true;
 
-    private QueueMode mQueueMode;
+    protected QueueMode mQueueMode;
 
     protected $HttpAsyncExecutor(int size, QueueMode mode){
         mBlockingDequeSize = size;
@@ -40,7 +41,22 @@ public class $HttpAsyncExecutor implements HttpExecutor{
     @Override
     public $HttpAsyncExecutor addRequest(HTTPRequest request){
         if(mWorkers.size() == mBlockingDequeSize){
-            mWaitingWorkers.add(request);
+
+            // 暂时只在排队中做此处理
+            if(request.isEnableRemoveSameRequest()){
+                // 移除相同的请求 以最后一次为准
+                boolean success = mWaitingWorkers.remove(request);
+            }
+
+            switch (mQueueMode){
+                case FirstInFirstOut:
+                    mWaitingWorkers.add(request);
+                    break;
+                case LastInFirstOut:
+                    mWaitingWorkers.addFirst(request);
+                    break;
+            }
+
         }else {
             switch (mQueueMode){
                 case FirstInFirstOut:
@@ -55,8 +71,7 @@ public class $HttpAsyncExecutor implements HttpExecutor{
     }
 
     public void moveWaitingWorkerToDeque(){
-        while (true
-                && mWaitingWorkers.size() > 0){
+        while (mWaitingWorkers.size() > 0){
             HTTPRequest request = mWaitingWorkers.poll();
             if(!request.isCanceled()){
                 addRequest(request);
@@ -87,6 +102,8 @@ public class $HttpAsyncExecutor implements HttpExecutor{
 
                     if(!request.isCanceled()){
                         HTTPResponse response = request.request();
+                    }else {
+                        Log.w("AsyncExecutor", "Request Is Canceled !");
                     }
 
                 } catch (InterruptedException e) {

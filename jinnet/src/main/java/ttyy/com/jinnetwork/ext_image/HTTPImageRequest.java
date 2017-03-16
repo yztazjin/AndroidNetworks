@@ -36,7 +36,7 @@ class HTTPImageRequest extends HTTPRequest {
         // 是否启用缓存
         if (mImageBuilder.isUseCache()
                 && ((ViewTracker)getHttpCallback()).isViewTracked()) {
-            rsp = responseFromCache();
+            rsp = responseFromAllCacheTypes();
             if(rsp != null){
                 return rsp;
             }
@@ -64,9 +64,11 @@ class HTTPImageRequest extends HTTPRequest {
     @Override
     public void requestAsync() {
 
+        getHttpCallback().onPreStart(this);
         // 是否启用缓存
         if (mImageBuilder.isUseCache()) {
-            if(responseFromCache() != null){
+            // 主线程中 从内存读取提高效率
+            if(responseFromRuntimeCache() != null){
                 return;
             }
         }
@@ -75,16 +77,15 @@ class HTTPImageRequest extends HTTPRequest {
     }
 
     /**
-     * 从缓存中获取响应
+     * 从内存中读取缓存
      * @return
      */
-    private HTTPResponse responseFromCache(){
-
+    private HTTPResponse responseFromRuntimeCache(){
         String uri = getRequestURL();
         boolean isRuntimeCacheHit = ImageCache.getInstance().isRuntimeCacheHit(uri);
         Log.i("Images", "isRuntimeCacheHit "+isRuntimeCacheHit);
+
         if(isRuntimeCacheHit){
-            getHttpCallback().onPreStart(this);
 
             ViewTracker tracker = (ViewTracker) getHttpCallback();
 
@@ -99,24 +100,58 @@ class HTTPImageRequest extends HTTPRequest {
             tracker.onFinish(rsp);
 
             return rsp;
-        }else {
-            boolean isDiskCacheHit = ImageCache.getInstance().isDiskCacheHit(uri);
-            Log.i("Images", "isDiskCacheHit "+isDiskCacheHit);
-            if(isDiskCacheHit){
+        }
+        return null;
+    }
 
-                File sourceFile = ImageCache.getInstance().getDiskCache(uri);
-                builder.setResponseFile(sourceFile);
-                $HttpResponse rsp = new $HttpResponse(this);
-                rsp.setStatusCode(200);
-                rsp.setContentLength(builder.getResponseStreamFile().length());
+    /**
+     * 从磁盘中读取缓存
+     * @return
+     */
+    private HTTPResponse responseFromDiskCache(){
+        String uri = getRequestURL();
+        boolean isDiskCacheHit = ImageCache.getInstance().isDiskCacheHit(uri);
+        Log.i("Images", "isDiskCacheHit "+isDiskCacheHit);
+        if(isDiskCacheHit){
 
-                getHttpCallback().onSuccess(rsp);
-                getHttpCallback().onFinish(rsp);
+            File sourceFile = ImageCache.getInstance().getDiskCache(uri);
+            builder.setResponseFile(sourceFile);
+            $HttpResponse rsp = new $HttpResponse(this);
+            rsp.setStatusCode(200);
+            rsp.setContentLength(builder.getResponseStreamFile().length());
 
-                return rsp;
-            }
+            getHttpCallback().onSuccess(rsp);
+            getHttpCallback().onFinish(rsp);
+
+            return rsp;
         }
 
         return null;
+    }
+
+    /**
+     * 从所有缓存中获取响应
+     * @return
+     */
+    private HTTPResponse responseFromAllCacheTypes(){
+
+        HTTPResponse response = responseFromRuntimeCache();
+        if(response == null){
+            response = responseFromDiskCache();
+        }
+
+        return response;
+    }
+
+    @Override
+    public Object getUniqueToken() {
+        ViewTracker tracker = (ViewTracker) builder.getHttpCallback();
+        if(tracker != null
+                && tracker.getTargetView() != null){
+            // 优先唯一标示符 当前要显示的View
+            return tracker.getTargetView().hashCode();
+        }else {
+            return new Object();
+        }
     }
 }

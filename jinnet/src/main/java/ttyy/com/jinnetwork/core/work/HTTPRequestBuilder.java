@@ -43,6 +43,11 @@ public class HTTPRequestBuilder {
     protected ClientType mClientType;
     protected Client mRequestClient;
 
+    // 用户自定义Request唯一标识符
+    protected Object mRequestUniqueToken;
+    // 是否移除URL相同的Request 默认为true
+    protected boolean isEnableRemoveSameRequest;
+
     /**
      * 响应文件
      * 如果响应文件不为空，那么就不会从网络请求数据，直接从该文件获取数据
@@ -51,6 +56,7 @@ public class HTTPRequestBuilder {
 
     protected HTTPRequestBuilder() {
         mClientType = HTTPConfig.get().getClientType();
+        isEnableRemoveSameRequest = true;
     }
 
     public HTTPRequestBuilder addParam(String key, Object value) {
@@ -111,7 +117,7 @@ public class HTTPRequestBuilder {
         return mRequestClient;
     }
 
-    public String getRequestURL() {
+    public String getDecoratedRequestURL() {
         if (!TextUtils.isEmpty(mRequestURL)
                 && path_params.size() > 0) {
             // 路径参数
@@ -123,6 +129,10 @@ public class HTTPRequestBuilder {
             }
             return convertedURL;
         }
+        return mRequestURL;
+    }
+
+    public String getOriginRequestURL(){
         return mRequestURL;
     }
 
@@ -255,9 +265,57 @@ public class HTTPRequestBuilder {
         return null;
     }
 
+    /**
+     * 设置客户端类型
+     * @param type
+     * @return
+     */
     public HTTPRequestBuilder setClientType(ClientType type) {
         mClientType = type;
         return this;
+    }
+
+    /**
+     * 设置是否移除相同url的request 此url为包装过的url
+     * @param value
+     * @return
+     */
+    public HTTPRequestBuilder setIsEnableRemoveSameRequest(boolean value){
+        this.isEnableRemoveSameRequest = value;
+        return this;
+    }
+
+    public boolean isEnableRemoveSameRequest(){
+        return isEnableRemoveSameRequest;
+    }
+
+    /**
+     * 设置此次请求的唯一标示符
+     * @param token
+     * @return
+     */
+    public HTTPRequestBuilder setRequestUniqueToken(Object token){
+        mRequestUniqueToken = token == null ? new Object() : token;
+        return this;
+    }
+
+    public Object getRequestUniqueToken(){
+
+        if(mRequestUniqueToken != null){
+            return mRequestUniqueToken;
+        }
+
+        if(getOriginRequestURL() != null){
+
+            mRequestUniqueToken = getOriginRequestURL();
+        }else if(getResponseStreamFile() != null){
+
+            mRequestUniqueToken = getResponseStreamFile().getAbsolutePath();
+        }else {
+            mRequestUniqueToken = new Object();
+        }
+
+        return mRequestUniqueToken;
     }
 
     public HTTPRequest build() {
