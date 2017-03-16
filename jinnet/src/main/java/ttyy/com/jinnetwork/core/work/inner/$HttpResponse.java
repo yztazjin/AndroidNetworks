@@ -1,5 +1,7 @@
 package ttyy.com.jinnetwork.core.work.inner;
 
+import android.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -154,9 +156,15 @@ public class $HttpResponse implements HTTPResponse {
             fos.close();
             stream.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.w("Https", "Error "+e.getMessage());
+            file.delete();
+            setStatusCode(-1);
+            setErrorMessage("FileNotFoundException "+file.getPath());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w("Https", "Error "+e.getMessage());
+            file.delete();
+            setStatusCode(-1);
+            setErrorMessage("IOException "+e.getMessage());
         }
     }
 
@@ -185,10 +193,10 @@ public class $HttpResponse implements HTTPResponse {
             baos.flush();
             baos.close();
             stream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w("Https", "Error "+e.getMessage());
+            setStatusCode(-1);
+            setErrorMessage("IOException "+e.getMessage());
         }
 
     }
