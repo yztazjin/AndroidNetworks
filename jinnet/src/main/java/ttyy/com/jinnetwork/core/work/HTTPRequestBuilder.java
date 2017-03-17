@@ -305,13 +305,14 @@ public class HTTPRequestBuilder {
             return mRequestUniqueToken;
         }
 
-        if(getOriginRequestURL() != null){
+        if(getDecoratedRequestURL() != null){
 
-            mRequestUniqueToken = getOriginRequestURL();
+            mRequestUniqueToken = getDecoratedRequestURL();
         }else if(getResponseStreamFile() != null){
 
             mRequestUniqueToken = getResponseStreamFile().getAbsolutePath();
         }else {
+
             mRequestUniqueToken = new Object();
         }
 
