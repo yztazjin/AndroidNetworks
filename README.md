@@ -52,12 +52,16 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 ## Images 
 图片加载
 ```Java
- Images.get().source(data.url)
-             .useCache(false)
-             .placeholder(R.drawable.shape_pre)
-             .anim(android.R.anim.fade_in)
-             .error(R.drawable.shape_err)
-             .into(iv);
+ Images.get().source(data.url)// 图片资源地址
+             .useCache(false)// 是否启用缓存
+             .placeholder(R.drawable.shape_pre)// 加载前的预置图片
+             .anim(android.R.anim.fade_in)// 加载成功后的过渡动画
+             .error(R.drawable.shape_err)// 加载失败后的图片
+             .into(iv); // 要加载的View ImageView setImageBitmap 非ImageView setBackgroundDrawable
 ```
 
+#### Images Source
+*1.File file Images.get().source(file)
+*2.File String url = "file://"+file.getAbsoultPath() Images.get().source(url)
+*3.Network Images.get().source(url)
   
