@@ -68,16 +68,16 @@ public class ViewTracker implements HTTPCallback {
 
     @Override
     public final void onPreStart(final HTTPRequest request) {
-        Log.i("Images", "url -> "+request.getRequestURL());
+        Log.i("Images", "url -> " + request.getRequestURL());
 
         if (placeHolderId > 0) {
             if (!isViewTracked()) {
                 return;
             }
 
-            if(Looper.myLooper() == Looper.getMainLooper()){
+            if (Looper.myLooper() == Looper.getMainLooper()) {
                 setImageIntoView(placeHolderId);
-            }else {
+            } else {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -97,43 +97,45 @@ public class ViewTracker implements HTTPCallback {
         File file = response.getHttpRequest().getDownloadFile();
 
         // 处理图片
-        final Bitmap bm = decodeFileToBitmap(file);
+        Bitmap bm = decodeFileToBitmap(file);
 
         // 解析失败
-        if(bm == null){
+        if (bm == null) {
             onFailure(response);
             return;
         }
 
-        Log.i("Images", "onSuccess "+file.getAbsolutePath());
-        
+        Log.i("Images", "onSuccess " + file.getAbsolutePath());
+
         // 是否需要缓存
-        if(mUseCache){
+        if (mUseCache) {
             ImageCache.getInstance().setIntoCache(response.getHttpRequest().getRequestURL(), bm);
         }
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (isViewTracked()) {
-                    // Btimap处理
-                    Bitmap future_bm = bm;
-                    future_bm = preSetBitmapIntoView(future_bm);
-                    setImageIntoView(future_bm);
+        if (isViewTracked()) {
+            // Btimap处理 在线程中处理Bitmap
+            bm = preSetBitmapIntoView(bm);
+            final Bitmap preSettedBitmap = bm;
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (isViewTracked()) {
+                        setImageIntoView(preSettedBitmap);
+                    }
                 }
-            }
-        });
+            });
+        }
 
     }
 
     @Override
     public final void onCancel(HTTPRequest response) {
-        Log.i("Images", "onCancel "+mSourceTokenURL);
+        Log.i("Images", "onCancel " + mSourceTokenURL);
     }
 
     @Override
     public final void onFailure(final HTTPResponse response) {
-        Log.i("Images", "onFailure "+mSourceTokenURL);
+        Log.i("Images", "onFailure " + mSourceTokenURL);
         if (errorId > 0) {
             mHandler.post(new Runnable() {
                 @Override
@@ -151,16 +153,17 @@ public class ViewTracker implements HTTPCallback {
 
     }
 
-    public final View getTargetView(){
+    public final View getTargetView() {
         return view;
     }
 
     /**
      * 解析File
+     *
      * @param file
      * @return
      */
-    public Bitmap decodeFileToBitmap(File file){
+    public Bitmap decodeFileToBitmap(File file) {
         return Compressor.get().compressToBitmap(file);
     }
 
@@ -173,12 +176,12 @@ public class ViewTracker implements HTTPCallback {
     }
 
     public void setImageIntoView(final Bitmap bm) {
-        if(!isViewTracked()){
+        if (!isViewTracked()) {
             Log.w("Images", "View Not Tracked Ignored It");
             return;
         }
 
-        if(Looper.myLooper() != Looper.getMainLooper()){
+        if (Looper.myLooper() != Looper.getMainLooper()) {
             Log.w("Images", "Not In UILooper Post To UILooper");
             // 不在UI主线程
             mHandler.post(new Runnable() {
@@ -187,12 +190,12 @@ public class ViewTracker implements HTTPCallback {
                     setImageIntoView(bm);
                 }
             });
-        }else {
+        } else {
             // 正在排队的任务忽略掉
             mHandler.removeCallbacksAndMessages(null);
             // 在UI主线程
             Bitmap mSuccessBitmap = bm;
-            if(mTransition != null){
+            if (mTransition != null) {
                 mSuccessBitmap = mTransition.translate(bm);
             }
 
@@ -212,31 +215,34 @@ public class ViewTracker implements HTTPCallback {
 
     /**
      * 图片加载成功后的动画
+     *
      * @param id
      */
-    public void onImageLoadSuccessAnimation(int id){
+    public void onImageLoadSuccessAnimation(int id) {
         Animation anim = AnimationUtils.loadAnimation(view.getContext(), id);
         view.startAnimation(anim);
     }
 
     /**
      * 加载成功设置图片之前
+     *
      * @param bm
      */
-    public Bitmap preSetBitmapIntoView(Bitmap bm){
-        
+    public Bitmap preSetBitmapIntoView(Bitmap bm) {
+
         return bm;
     }
 
     /**
      * 加载成功设置图片之后
+     *
      * @param bm
      */
-    public void afterSetBitmapIntoView(Bitmap bm){
+    public void afterSetBitmapIntoView(Bitmap bm) {
 
     }
 
-    public boolean isViewTracked(){
+    public boolean isViewTracked() {
         if (view.getTag() != null
                 && view.getTag().equals(mSourceToken)) {
             return true;
