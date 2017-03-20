@@ -51,7 +51,7 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 ```
 
 #### Images Source
-*1.File file Images.get().source(file)
-*2.File String url = "file://"+file.getAbsoultPath() Images.get().source(url)
-*3.Network Images.get().source(url)
+*1. File file Images.get().source(file)
+*2. File String url = "file://"+file.getAbsoultPath() Images.get().source(url)
+*3. Network Images.get().source(url)
   
