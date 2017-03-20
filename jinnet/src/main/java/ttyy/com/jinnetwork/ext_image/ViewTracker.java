@@ -134,9 +134,13 @@ public class ViewTracker implements HTTPCallback {
     }
 
     @Override
-    public final void onFailure(final HTTPResponse response) {
+    public final void onFailure(HTTPResponse response) {
         Log.i("Images", "onFailure " + mSourceTokenURL);
         if (errorId > 0) {
+            if (!isViewTracked()) {
+                return;
+            }
+
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
