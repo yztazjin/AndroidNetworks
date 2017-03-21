@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import ttyy.com.jinnetwork.Images;
+import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
 
 /**
  * Author: hjq
@@ -46,12 +47,11 @@ public class GankIOAdapter extends BaseAdapter {
         ImageView iv = (ImageView) view.findViewById(R.id.iv_image);
         GankIOBean.Data data = datas.get(i);
         Images.get().source(data.url)
-                .useCache(false)
+                .useCache(ImageCacheType.AllCache)
                 .placeholder(R.drawable.shape_pre)
                 .anim(android.R.anim.fade_in)
                 .error(R.drawable.shape_err)
                 .into(iv);
-
 
         return view;
     }

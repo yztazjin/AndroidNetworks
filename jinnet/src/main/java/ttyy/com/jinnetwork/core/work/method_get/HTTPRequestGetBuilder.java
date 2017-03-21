@@ -1,12 +1,11 @@
 package ttyy.com.jinnetwork.core.work.method_get;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import ttyy.com.jinnetwork.core.callback.HTTPCallback;
+import ttyy.com.jinnetwork.core.config.__Log;
 import ttyy.com.jinnetwork.core.http.base.Client;
 import ttyy.com.jinnetwork.core.http.base.ClientType;
 import ttyy.com.jinnetwork.core.work.HTTPMethod;
@@ -93,7 +92,7 @@ public class HTTPRequestGetBuilder extends HTTPRequestBuilder {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                Log.w("Https", "setDownloadMode can't create file");
+                __Log.w("Https", "setDownloadMode can't create file");
             }
         }else {
             if(file.length() > 0){

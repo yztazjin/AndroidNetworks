@@ -1,11 +1,11 @@
 package ttyy.com.jinnetwork.ext_image;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.io.File;
 
 import ttyy.com.jinnetwork.core.async.$HttpExecutorPool;
+import ttyy.com.jinnetwork.core.config.__Log;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 import ttyy.com.jinnetwork.core.work.inner.$HttpResponse;
@@ -19,7 +19,7 @@ import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
  * desc: HTTPImageRequest
  */
 
-class HTTPImageRequest extends HTTPRequest {
+public class HTTPImageRequest extends HTTPRequest {
 
     private HTTPRequestImageBuilder mImageBuilder;
 
@@ -36,26 +36,62 @@ class HTTPImageRequest extends HTTPRequest {
         // 是否启用缓存
         if (mImageBuilder.isUseCache()
                 && ((ViewTracker)getHttpCallback()).isViewTracked()) {
-            rsp = responseFromAllCacheTypes();
+            switch (mImageBuilder.getImageCacheType()){
+                case AllCache:
+                    rsp = responseFromAllCacheTypes();
+                    break;
+                case RuntimeCache:
+                    rsp = responseFromRuntimeCache();
+                    break;
+                case DiskCache:
+                    rsp = responseFromDiskCache();
+                    break;
+            }
             if(rsp != null){
                 return rsp;
             }
         }
 
+        // 资源加载
+        // 无论网络资源还是本地文件资源 若用户没有设置下载地址，设置默认的下载地址
+        // 那么都会设置一个插件默认管理的下载地址
+        if(getDownloadFile() == null){
+            File origin_dir = new File(ImageCache.getInstance().getDiskCacheDir(), "origin");
+            File file = null;
+            if(mImageBuilder.getImageCacheType().useDiskCache()){
+                // 使用磁盘缓存 以便下一次继续使用或者断点下载
+                file = new File(origin_dir,  String.valueOf(mImageBuilder.getDecoratedRequestURL().hashCode()));
+            }else {
+                // 不适用磁盘缓存 随机生成一个文件用来下载 图片加载用完即删
+                file = new File(origin_dir,  String.valueOf(System.currentTimeMillis()));
+            }
+
+            mImageBuilder.setDownloadMode(file);
+        }
+
+        // 加载资源
         if (uri.startsWith("file://")) {
             // 本地文件
-            File mResponseFile = builder.getResponseStreamFile();
+            File mResponseFile = mImageBuilder.getResponseStreamFile();
 
             if (mResponseFile == null) {
                 uri = uri.substring(7);
                 mResponseFile = new File(uri);
-                builder.setResponseFile(mResponseFile);
+                mImageBuilder.setResponseFile(mResponseFile);
             }
 
-            rsp = readDataFromCustomResponse(builder.getResponseStream());
+            rsp = readDataFromCustomResponse(mImageBuilder.getResponseStream());
         } else {
 
             rsp = readDataFromNetwork(getRequestClient());
+            // 不启用缓存 文件下载完成后 直接删除 只针对网络请求有效
+            if(!mImageBuilder.getImageCacheType().useDiskCache()){
+                File mDownloadFile = mImageBuilder.getDownloadFile();
+                if(mDownloadFile != null
+                        && mDownloadFile.exists()){
+                    mDownloadFile.getAbsoluteFile().delete();
+                }
+            }
         }
 
         return rsp;
@@ -66,7 +102,7 @@ class HTTPImageRequest extends HTTPRequest {
 
         getHttpCallback().onPreStart(this);
         // 是否启用缓存
-        if (mImageBuilder.isUseCache()) {
+        if (mImageBuilder.getImageCacheType().useRuntimeCache()) {
             // 主线程中 从内存读取提高效率
             if(responseFromRuntimeCache() != null){
                 return;
@@ -83,19 +119,21 @@ class HTTPImageRequest extends HTTPRequest {
     private HTTPResponse responseFromRuntimeCache(){
         String uri = getRequestURL();
         boolean isRuntimeCacheHit = ImageCache.getInstance().isRuntimeCacheHit(uri);
-        Log.i("Images", "isRuntimeCacheHit "+isRuntimeCacheHit);
+        __Log.i("Images", "isRuntimeCacheHit "+isRuntimeCacheHit);
 
         if(isRuntimeCacheHit){
 
             ViewTracker tracker = (ViewTracker) getHttpCallback();
 
             Bitmap bm = ImageCache.getInstance().getRuntimeCache(uri);
-            ImageCache.getInstance().setIntoCache(uri, bm);
+            ImageCache.getInstance().setIntoRuntimeCache(uri, bm);
 
             $HttpResponse rsp = new $HttpResponse(this);
-            rsp.setStatusCode(200);
+            rsp.setStatusCode(101);//101 内存缓存加载状态码
             rsp.setContentLength(bm.getRowBytes() * bm.getHeight());
 
+            getHttpCallback().onProgress(rsp, rsp.getContentLength(), rsp.getContentLength());
+            getHttpCallback().onSuccess(rsp);
             tracker.setImageIntoView(bm);
             tracker.onFinish(rsp);
 
@@ -111,15 +149,17 @@ class HTTPImageRequest extends HTTPRequest {
     private HTTPResponse responseFromDiskCache(){
         String uri = getRequestURL();
         boolean isDiskCacheHit = ImageCache.getInstance().isDiskCacheHit(uri);
-        Log.i("Images", "isDiskCacheHit "+isDiskCacheHit);
+        __Log.i("Images", "isDiskCacheHit "+isDiskCacheHit);
         if(isDiskCacheHit){
 
             File sourceFile = ImageCache.getInstance().getDiskCache(uri);
-            builder.setResponseFile(sourceFile);
+            mImageBuilder.setResponseFile(sourceFile);
+            mImageBuilder.setDownloadMode(sourceFile);
             $HttpResponse rsp = new $HttpResponse(this);
-            rsp.setStatusCode(200);
-            rsp.setContentLength(builder.getResponseStreamFile().length());
+            rsp.setStatusCode(100);// 100磁盘thumb缓存专用状态码
+            rsp.setContentLength(mImageBuilder.getResponseStreamFile().length());
 
+            getHttpCallback().onProgress(rsp, rsp.getContentLength(), rsp.getContentLength());
             getHttpCallback().onSuccess(rsp);
             getHttpCallback().onFinish(rsp);
 
@@ -145,7 +185,7 @@ class HTTPImageRequest extends HTTPRequest {
 
     @Override
     public Object getUniqueToken() {
-        ViewTracker tracker = (ViewTracker) builder.getHttpCallback();
+        ViewTracker tracker = (ViewTracker) mImageBuilder.getHttpCallback();
         if(tracker != null
                 && tracker.getTargetView() != null){
             // 优先唯一标示符 当前要显示的View

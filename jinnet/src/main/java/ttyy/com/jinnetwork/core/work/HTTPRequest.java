@@ -1,7 +1,5 @@
 package ttyy.com.jinnetwork.core.work;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +8,7 @@ import java.util.Map;
 import ttyy.com.jinnetwork.core.async.$HttpExecutorPool;
 import ttyy.com.jinnetwork.core.async.HttpExecutor;
 import ttyy.com.jinnetwork.core.callback.HTTPCallback;
+import ttyy.com.jinnetwork.core.config.__Log;
 import ttyy.com.jinnetwork.core.http.ApacheHttpClientImpl;
 import ttyy.com.jinnetwork.core.http.OKHttpClientImpl;
 import ttyy.com.jinnetwork.core.http.URLConnectionImpl;
@@ -92,7 +91,7 @@ public class HTTPRequest {
             getHttpCallback().onCancel(this);
             getHttpCallback().onFinish(null);
         }else {
-            Log.w("Https", "AsyncExecutor Remove It !");
+            __Log.w("Https", "AsyncExecutor Remove It !");
         }
         return this;
     }
@@ -221,7 +220,7 @@ public class HTTPRequest {
             callback.onPreStart(this);
         }
 
-        rsp.setStatusCode(200);
+        rsp.setStatusCode(102);// 从磁盘文件中读取数据状态码
         rsp.setContentLength(builder.getResponseStreamFile().length());
 
         if(getDownloadFile() != null

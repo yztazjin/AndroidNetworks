@@ -1,7 +1,5 @@
 package ttyy.com.jinnetwork.core.work.inner;
 
-import android.util.Log;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ttyy.com.jinnetwork.core.callback.HTTPCallback;
+import ttyy.com.jinnetwork.core.config.__Log;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 
@@ -37,6 +36,10 @@ public class $HttpResponse implements HTTPResponse {
     long mContentLength;
     /**
      * Https Status Code
+     * -1 出现了异常
+     * 100 图片加载 加载磁盘thumb缓存专用状态码
+     * 101 图片加载 加载内存缓存专用状态码
+     * 102 从磁盘文件中获取数据状态码
      */
     int mHttpStatusCode;
     /**
@@ -156,12 +159,12 @@ public class $HttpResponse implements HTTPResponse {
             fos.close();
             stream.close();
         } catch (FileNotFoundException e) {
-            Log.w("Https", "Error "+e.getMessage());
+            __Log.w("Https", "Error "+e.getMessage());
             file.delete();
             setStatusCode(-1);
             setErrorMessage("FileNotFoundException "+file.getPath());
         } catch (IOException e) {
-            Log.w("Https", "Error "+e.getMessage());
+            __Log.w("Https", "Error "+e.getMessage());
             file.delete();
             setStatusCode(-1);
             setErrorMessage("IOException "+e.getMessage());
@@ -194,7 +197,7 @@ public class $HttpResponse implements HTTPResponse {
             baos.close();
             stream.close();
         } catch (IOException e) {
-            Log.w("Https", "Error "+e.getMessage());
+            __Log.w("Https", "Error "+e.getMessage());
             setStatusCode(-1);
             setErrorMessage("IOException "+e.getMessage());
         }

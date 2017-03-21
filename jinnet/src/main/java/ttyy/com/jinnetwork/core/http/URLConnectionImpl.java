@@ -161,7 +161,7 @@ public class URLConnectionImpl implements Client {
                 rsp.setContentLength(conn.getContentLength());
                 rsp.readContentFromStream(conn.getInputStream());
             }
-
+            conn.disconnect();
         } catch (IOException e) {
 
             rsp = new $HttpResponse(worker);
@@ -206,6 +206,8 @@ public class URLConnectionImpl implements Client {
                 rsp.setContentLength(conn.getContentLength());
                 rsp.readContentFromStream(conn.getInputStream());
             }
+            // 断开连接
+            conn.disconnect();
         } catch (IOException e) {
 
             rsp = new $HttpResponse(worker);

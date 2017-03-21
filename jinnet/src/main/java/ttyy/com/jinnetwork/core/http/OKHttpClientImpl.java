@@ -187,6 +187,8 @@ public class OKHttpClientImpl implements Client {
                 response.setContentLength(okhttp_resp.body().contentLength());
                 response.readContentFromStream(okhttp_resp.body().byteStream());
             }
+            // 关闭连接
+            okhttp_resp.close();
         } catch (IOException e) {
             response.setException(e);
             response.setStatusCode(-1);

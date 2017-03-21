@@ -1,7 +1,5 @@
 package ttyy.com.jinnetwork.core.work.inner;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ttyy.com.jinnetwork.core.config.__Log;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 
 /**
@@ -41,7 +40,7 @@ public final class $Converter {
             try {
                 jsonObject.put(key, value);
             } catch (JSONException e) {
-                Log.i("Converter", "JSONError key "+key);
+                __Log.i("Converter", "JSONError key "+key);
                 e.printStackTrace();
             }
         }

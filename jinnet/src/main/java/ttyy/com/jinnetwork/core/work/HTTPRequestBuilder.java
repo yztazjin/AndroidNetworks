@@ -1,7 +1,6 @@
 package ttyy.com.jinnetwork.core.work;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,6 +16,7 @@ import ttyy.com.jinnetwork.core.callback.$HTTPUIThreadCallbackAdapterProxy;
 import ttyy.com.jinnetwork.core.callback.HTTPCallback;
 import ttyy.com.jinnetwork.core.callback.HTTPUIThreadCallbackAdapter;
 import ttyy.com.jinnetwork.core.config.HTTPConfig;
+import ttyy.com.jinnetwork.core.config.__Log;
 import ttyy.com.jinnetwork.core.http.base.Client;
 import ttyy.com.jinnetwork.core.http.base.ClientType;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
@@ -174,7 +174,7 @@ public class HTTPRequestBuilder {
 
                 setResponseFile(tmpFile);
             } catch (IOException e) {
-                Log.w("Https", "setResponseStream io exception file not exists");
+                __Log.w("Https", "setResponseStream io exception file not exists");
             }
         }
         return this;
@@ -212,7 +212,7 @@ public class HTTPRequestBuilder {
         try {
             return new FileInputStream(mResponseStreamFile);
         } catch (FileNotFoundException e) {
-            Log.w("Https", "getResponseStream io exception file not exists");
+            __Log.w("Https", "getResponseStream io exception file not exists");
         }
 
         return null;
@@ -242,7 +242,7 @@ public class HTTPRequestBuilder {
 
             mResponseStreamBytes = baos.toByteArray();
         } catch (IOException e) {
-            Log.w("Https", "getResponseStreamBytes io exception");
+            __Log.w("Https", "getResponseStreamBytes io exception");
         }
         return mResponseStreamBytes;
     }

@@ -14,6 +14,10 @@ public interface HTTPResponse {
 
     /**
      * 状态码
+     * -1 出现了异常
+     * 100 图片加载 加载磁盘thumb缓存专用状态码
+     * 101 图片加载 加载内存缓存专用状态码
+     * 102 从磁盘文件中获取数据状态码
      * @return
      */
     int getStatusCode();

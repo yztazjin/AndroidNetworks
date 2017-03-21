@@ -5,7 +5,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,9 +13,11 @@ import android.widget.ImageView;
 import java.io.File;
 
 import ttyy.com.jinnetwork.core.callback.HTTPCallback;
+import ttyy.com.jinnetwork.core.config.__Log;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
+import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
 import ttyy.com.jinnetwork.ext_image.processor.Compressor;
 
 /**
@@ -44,7 +45,7 @@ public class ViewTracker implements HTTPCallback {
     private String mSourceTokenURL;
     private int mSourceToken;
 
-    private boolean mUseCache;
+    private ImageCacheType mImageCacheType;
 
     public ViewTracker(View view) {
         this.view = view;
@@ -55,7 +56,7 @@ public class ViewTracker implements HTTPCallback {
         errorId = builder.getErrorResources();
         mAnimId = builder.getAnimResources();
         mTransition = builder.getTransition();
-        mUseCache = builder.isUseCache();
+        mImageCacheType = builder.getImageCacheType();
 
         mSourceTokenURL = builder.getDecoratedRequestURL();
         if (!TextUtils.isEmpty(mSourceTokenURL)) {
@@ -67,8 +68,8 @@ public class ViewTracker implements HTTPCallback {
     }
 
     @Override
-    public final void onPreStart(final HTTPRequest request) {
-        Log.i("Images", "url -> " + request.getRequestURL());
+    public final void onPreStart(HTTPRequest request) {
+        __Log.i("Images", "url -> " + mSourceTokenURL);
 
         if (placeHolderId > 0) {
             if (!isViewTracked()) {
@@ -94,6 +95,11 @@ public class ViewTracker implements HTTPCallback {
 
     @Override
     public final void onSuccess(HTTPResponse response) {
+        if(isRespFromRuntimCache(response)){
+            // 从磁盘缓存成功 不需要设置解析文件 外层直接通过setBitmap
+            return;
+        }
+
         File file = response.getHttpRequest().getDownloadFile();
 
         // 处理图片
@@ -105,11 +111,17 @@ public class ViewTracker implements HTTPCallback {
             return;
         }
 
-        Log.i("Images", "onSuccess " + file.getAbsolutePath());
+        __Log.i("Images", "onSuccess " + mSourceTokenURL);
 
-        // 是否需要缓存
-        if (mUseCache) {
-            ImageCache.getInstance().setIntoCache(response.getHttpRequest().getRequestURL(), bm);
+        // 是否需要磁盘缓存
+        if (mImageCacheType.useDiskCache()
+                && !isRespFromDiskCache(response)) {
+            // 不是从磁盘thumb缓存而来 就存进thumb缓存
+            ImageCache.getInstance().setIntoDiskCache(mSourceTokenURL, bm);
+        }
+        // 是否需要内存缓存
+        if(mImageCacheType.useRuntimeCache()){
+            ImageCache.getInstance().setIntoRuntimeCache(mSourceTokenURL, bm);
         }
 
         if (isViewTracked()) {
@@ -130,12 +142,12 @@ public class ViewTracker implements HTTPCallback {
 
     @Override
     public final void onCancel(HTTPRequest response) {
-        Log.i("Images", "onCancel " + mSourceTokenURL);
+        __Log.i("Images", "onCancel " + mSourceTokenURL);
     }
 
     @Override
     public final void onFailure(HTTPResponse response) {
-        Log.i("Images", "onFailure " + mSourceTokenURL);
+        __Log.i("Images", "onFailure " + mSourceTokenURL);
         if (errorId > 0) {
             if (!isViewTracked()) {
                 return;
@@ -181,12 +193,12 @@ public class ViewTracker implements HTTPCallback {
 
     public void setImageIntoView(final Bitmap bm) {
         if (!isViewTracked()) {
-            Log.w("Images", "View Not Tracked Ignored It");
+            __Log.w("Images", "View Not Tracked Ignored It");
             return;
         }
 
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            Log.w("Images", "Not In UILooper Post To UILooper");
+            __Log.w("Images", "Not In UILooper Post To UILooper");
             // 不在UI主线程
             mHandler.post(new Runnable() {
                 @Override
@@ -253,6 +265,27 @@ public class ViewTracker implements HTTPCallback {
         }
 
         return false;
+    }
+
+    /**
+     * response状态码判断
+     *  -1 出现了异常
+     * 100 图片加载 加载磁盘thumb缓存专用状态码
+     * 101 图片加载 加载内存缓存专用状态码
+     * 102 从磁盘文件中获取数据状态码
+     * @param response
+     * @return
+     */
+    public final boolean isRespFromRuntimCache(HTTPResponse response){
+        return response.getStatusCode() == 101;
+    }
+
+    public final boolean isRespFromDiskCache(HTTPResponse response){
+        return response.getStatusCode() == 100;
+    }
+
+    public final boolean isRespFromDiskSource(HTTPResponse response){
+        return response.getStatusCode() == 102;
     }
 
 }

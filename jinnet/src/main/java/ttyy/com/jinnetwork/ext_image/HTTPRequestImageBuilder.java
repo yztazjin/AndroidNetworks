@@ -9,6 +9,7 @@ import java.io.File;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
+import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
 
 /**
  * author: admin
@@ -20,7 +21,7 @@ import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
 
 public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements ImageRequestBuilder {
 
-    protected boolean mUseCache;
+    protected ImageCacheType mCacheType;
 
     protected int mPlaceHolderId;
 
@@ -29,6 +30,11 @@ public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements Im
     protected ImageTransition mBitmapTransition;
 
     protected int mAnimId;
+
+    public HTTPRequestImageBuilder(){
+        super();
+        mCacheType = ImageCacheType.AllCache;
+    }
 
     @Override
     public ImageRequestBuilder placeholder(int id) {
@@ -53,14 +59,19 @@ public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements Im
     }
 
     @Override
-    public ImageRequestBuilder useCache(boolean cache) {
-        mUseCache = cache;
+    public ImageRequestBuilder useCache(ImageCacheType cacheType) {
+        mCacheType = cacheType == null ? ImageCacheType.NoneCache : cacheType;
         return this;
     }
 
     @Override
     public boolean isUseCache() {
-        return mUseCache;
+        return getImageCacheType() != ImageCacheType.NoneCache;
+    }
+
+    @Override
+    public ImageCacheType getImageCacheType() {
+        return mCacheType;
     }
 
     @Override
@@ -109,13 +120,6 @@ public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements Im
         if(ImageCache.getInstance().getDiskCacheDir() == null){
             Context context = view.getContext().getApplicationContext();
             ImageCache.getInstance().setDiskCacheDir(context);
-        }
-
-        // 没有设置下载地址，设置默认的下载地址
-        if(getDownloadFile() == null){
-            File origin_dir = new File(ImageCache.getInstance().getDiskCacheDir(), "origin");
-            File file = new File(origin_dir,  String.valueOf(getDecoratedRequestURL().hashCode()));
-            setDownloadMode(file);
         }
 
         into(new ViewTracker(view));

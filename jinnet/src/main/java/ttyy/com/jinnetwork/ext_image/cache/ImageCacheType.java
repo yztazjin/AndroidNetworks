@@ -11,16 +11,47 @@ package ttyy.com.jinnetwork.ext_image.cache;
 public enum ImageCacheType {
 
     /**
-     * 内存缓存
+     * 使用内存缓存
      */
-    RuntimeCache,
+    RuntimeCache{
+        @Override
+        public boolean useRuntimeCache() {
+            return true;
+        }
+    },
     /**
-     * SDCard缓存
+     * 使用磁盘缓存
      */
-    DiskCache,
+    DiskCache{
+        @Override
+        public boolean useDiskCache() {
+            return true;
+        }
+    },
     /**
-     * 所有类型缓存
+     * 使用所有类型缓存
      */
-    AllCache;
+    AllCache{
+        @Override
+        public boolean useDiskCache() {
+            return true;
+        }
 
+        @Override
+        public boolean useRuntimeCache() {
+            return true;
+        }
+    },
+    /**
+     * 禁用缓存
+     */
+    NoneCache;
+
+    public boolean useDiskCache(){
+        return false;
+    }
+
+    public boolean useRuntimeCache(){
+        return false;
+    }
 }

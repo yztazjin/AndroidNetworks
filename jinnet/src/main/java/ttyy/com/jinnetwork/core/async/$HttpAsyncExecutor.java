@@ -1,12 +1,12 @@
 package ttyy.com.jinnetwork.core.async;
 
 import android.os.Process;
-import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import ttyy.com.jinnetwork.core.config.__Log;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 
@@ -103,7 +103,7 @@ public class $HttpAsyncExecutor implements HttpExecutor{
                     if(!request.isCanceled()){
                         HTTPResponse response = request.request();
                     }else {
-                        Log.w("AsyncExecutor", "Request Is Canceled !");
+                        __Log.w("AsyncExecutor", "Request Is Canceled !");
                     }
 
                 } catch (InterruptedException e) {

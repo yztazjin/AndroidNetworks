@@ -5,6 +5,8 @@ import android.view.View;
 import java.io.File;
 import java.io.InputStream;
 
+import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
+
 /**
  * author: admin
  * date: 2017/03/03
@@ -34,13 +36,23 @@ public interface ImageRequestBuilder {
     int getErrorResources();
 
     /**
-     * 启用缓存
-     * @param cache
+     * 设置缓存类型
+     * @param type
      * @return
      */
-    ImageRequestBuilder useCache(boolean cache);
+    ImageRequestBuilder useCache(ImageCacheType type);
 
+    /**
+     * 是否启用缓存
+     * @return
+     */
     boolean isUseCache();
+
+    /**
+     * 获取图片缓存类型
+     * @return
+     */
+    ImageCacheType getImageCacheType();
 
     /**
      * Bitmap 转换

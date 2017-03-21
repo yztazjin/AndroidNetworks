@@ -57,6 +57,7 @@ public class HTTPConfig {
         mIgnoreCertificate = true;
         // debug模式
         isDebugMode = true;
+        __Log.isDebugMode = isDebugMode;
 
         // post content-type
         mPostContentType = PostContentType.ApplicationJson;
@@ -110,6 +111,7 @@ public class HTTPConfig {
 
     public HTTPConfig setDebugMode(boolean value){
         this.isDebugMode = value;
+        __Log.isDebugMode = value;
         return this;
     }
 

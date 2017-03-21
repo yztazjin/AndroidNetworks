@@ -22,11 +22,11 @@ public interface HTTPCallback {
     /**
      * 进度
      * 下载进度
-     * @param request
+     * @param response
      * @param cur
      * @param total
      */
-    void onProgress(HTTPResponse request, long cur, long total);
+    void onProgress(HTTPResponse response, long cur, long total);
 
     /**
      * 获取到服务器响应

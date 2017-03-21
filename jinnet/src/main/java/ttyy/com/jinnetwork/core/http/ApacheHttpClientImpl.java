@@ -215,6 +215,8 @@ public class ApacheHttpClientImpl implements Client {
                 response.setContentLength(entity.getContentLength());
                 response.readContentFromStream(entity.getContent());
             }
+            // 断开连接
+            apache_resp.getEntity().getContent().close();
         } catch (IOException e) {
             response.setException(e);
             response.setStatusCode(-1);
