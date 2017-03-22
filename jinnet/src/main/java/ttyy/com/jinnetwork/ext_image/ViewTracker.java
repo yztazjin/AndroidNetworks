@@ -68,24 +68,13 @@ public class ViewTracker implements HTTPCallback {
     }
 
     @Override
-    public final void onPreStart(HTTPRequest request) {
-        __Log.i("Images", "url -> " + mSourceTokenURL);
+    public void onPreStart(HTTPRequest request) {
+        __Log.i("Images", "onPreStart " + mSourceTokenURL);
 
         if (placeHolderId > 0) {
-            if (!isViewTracked()) {
-                return;
-            }
-
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                setImageIntoView(placeHolderId);
-            } else {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        setImageIntoView(placeHolderId);
-                    }
-                });
-            }
+            setImageIntoView(placeHolderId);
+        }else {
+            __Log.w("Images", "Hasn't Set The PreStart ResourceId");
         }
     }
 
@@ -94,8 +83,8 @@ public class ViewTracker implements HTTPCallback {
     }
 
     @Override
-    public final void onSuccess(HTTPResponse response) {
-        if(isRespFromRuntimCache(response)){
+    public void onSuccess(HTTPResponse response) {
+        if (isRespFromRuntimCache(response)) {
             // 从磁盘缓存成功 不需要设置解析文件 外层直接通过setBitmap
             return;
         }
@@ -120,53 +109,37 @@ public class ViewTracker implements HTTPCallback {
             ImageCache.getInstance().setIntoDiskCache(mSourceTokenURL, bm);
         }
         // 是否需要内存缓存
-        if(mImageCacheType.useRuntimeCache()){
+        if (mImageCacheType.useRuntimeCache()) {
             ImageCache.getInstance().setIntoRuntimeCache(mSourceTokenURL, bm);
         }
 
         if (isViewTracked()) {
             // Btimap处理 在线程中处理Bitmap
             bm = preSetBitmapIntoView(bm);
-            final Bitmap preSettedBitmap = bm;
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (isViewTracked()) {
-                        setImageIntoView(preSettedBitmap);
-                    }
-                }
-            });
+            setImageIntoView(bm);
+        } else {
+            __Log.w("Images", "View Not Tracked Ignored It");
         }
 
     }
 
     @Override
-    public final void onCancel(HTTPRequest response) {
+    public void onCancel(HTTPRequest response) {
         __Log.i("Images", "onCancel " + mSourceTokenURL);
     }
 
     @Override
-    public final void onFailure(HTTPResponse response) {
+    public void onFailure(HTTPResponse response) {
         __Log.i("Images", "onFailure " + mSourceTokenURL);
         if (errorId > 0) {
-            if (!isViewTracked()) {
-                return;
-            }
-
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (isViewTracked()) {
-                        setImageIntoView(errorId);
-                    }
-                }
-            });
+            setImageIntoView(errorId);
+        }else {
+            __Log.w("Images", "Hasn't Set The Failure ResourceId");
         }
     }
 
     @Override
-    public final void onFinish(HTTPResponse response) {
-
+    public void onFinish(HTTPResponse response) {
     }
 
     public final View getTargetView() {
@@ -183,11 +156,26 @@ public class ViewTracker implements HTTPCallback {
         return Compressor.get().compressToBitmap(file);
     }
 
-    public void setImageIntoView(int id) {
-        if (view instanceof ImageView) {
-            ((ImageView) view).setImageResource(id);
+    public void setImageIntoView(final int id) {
+        if (!isViewTracked()) {
+            __Log.w("Images", "View Not Tracked Ignored It");
+            return;
+        }
+
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            __Log.w("Images", "Not In UILooper Post To UILooper");
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    setImageIntoView(id);
+                }
+            });
         } else {
-            view.setBackgroundResource(id);
+            if (view instanceof ImageView) {
+                ((ImageView) view).setImageResource(id);
+            } else {
+                view.setBackgroundResource(id);
+            }
         }
     }
 
@@ -269,22 +257,23 @@ public class ViewTracker implements HTTPCallback {
 
     /**
      * response状态码判断
-     *  -1 出现了异常
+     * -1 出现了异常
      * 100 图片加载 加载磁盘thumb缓存专用状态码
      * 101 图片加载 加载内存缓存专用状态码
      * 102 从磁盘文件中获取数据状态码
+     *
      * @param response
      * @return
      */
-    public final boolean isRespFromRuntimCache(HTTPResponse response){
+    public final boolean isRespFromRuntimCache(HTTPResponse response) {
         return response.getStatusCode() == 101;
     }
 
-    public final boolean isRespFromDiskCache(HTTPResponse response){
+    public final boolean isRespFromDiskCache(HTTPResponse response) {
         return response.getStatusCode() == 100;
     }
 
-    public final boolean isRespFromDiskSource(HTTPResponse response){
+    public final boolean isRespFromDiskSource(HTTPResponse response) {
         return response.getStatusCode() == 102;
     }
 
