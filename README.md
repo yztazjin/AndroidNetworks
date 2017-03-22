@@ -54,4 +54,10 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 * File file Images.get().source(file)
 * File String url = "file://"+file.getAbsoultPath() Images.get().source(url)
 * Network Images.get().source(url)
+
+## Response StatusCode
+* -1  出现异常
+* 100 图片加载 加载磁盘thumb缓存的状态码
+* 101 图片加载 加载内存缓存的状态码
+* 102 从磁盘文件中获取数据的状态码
   
