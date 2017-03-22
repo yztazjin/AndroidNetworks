@@ -97,7 +97,7 @@ public class ImageCache {
 
         int hashCode = getCacheToken(url);
         if (hashCode != -1) {
-            return getDiskThumbCacheFile(hashCode).exists();
+            return getDiskCacheThumbFile(url).exists();
         }
 
         return false;
@@ -113,7 +113,7 @@ public class ImageCache {
             return null;
         }
 
-        File cachedFile = getDiskThumbCacheFile(hashCode);
+        File cachedFile = getDiskCacheThumbFile(url);
         if (cachedFile.exists()) {
             return cachedFile;
         }
@@ -183,9 +183,9 @@ public class ImageCache {
             return;
         }
 
-        int token = getCacheToken(url);
-        if (mDiskCacheDir != null) {
-            File cachedFile = getDiskThumbCacheFile(token);
+        File cachedFile = getDiskCacheThumbFile(url);
+        if (cachedFile != null) {
+
             try {
                 FileOutputStream fos = new FileOutputStream(cachedFile, false);
                 bm.compress(Bitmap.CompressFormat.JPEG, 80, fos);
@@ -203,15 +203,47 @@ public class ImageCache {
 
     /**
      * 获取磁盘缓存的缩略图
-     * @param token
+     * @param url
      * @return
      */
-    private File getDiskThumbCacheFile(int token) {
+    public File getDiskCacheThumbFile(String url) {
+        if(mDiskCacheDir == null){
+            return null;
+        }
+
+        int token = getCacheToken(url);
+        if(token == -1){
+            return null;
+        }
+
         File cachedFileDir = new File(mDiskCacheDir, "thumb");
         if (!cachedFileDir.exists()) {
             cachedFileDir.mkdirs();
         }
         File cachedFile = new File(cachedFileDir, String.valueOf(token));
         return cachedFile;
+    }
+
+    /**
+     * 获取磁盘缓存的缩略图原图
+     * @param url
+     * @return
+     */
+    public File getDiskCacheOriginFile(String url){
+        if(mDiskCacheDir == null){
+            return null;
+        }
+
+        int token = getCacheToken(url);
+        if(token == -1){
+            return null;
+        }
+
+        File origin_dir = new File(ImageCache.getInstance().getDiskCacheDir(), "origin");
+        if(!origin_dir.exists()){
+            origin_dir.mkdirs();
+        }
+        File file = new File(origin_dir,  String.valueOf(token));
+        return file;
     }
 }
