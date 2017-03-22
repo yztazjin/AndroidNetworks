@@ -43,7 +43,7 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 图片加载
 ```Java
  Images.get().source(data.url)// 图片资源地址
-             .useCache(false)// 是否启用缓存
+             .useCache(ImageCacheType.AllCache)// 同时启用 内存缓存 磁盘缓存
              .placeholder(R.drawable.shape_pre)// 加载前的预置图片
              .anim(android.R.anim.fade_in)// 加载成功后的过渡动画
              .error(R.drawable.shape_err)// 加载失败后的图片
