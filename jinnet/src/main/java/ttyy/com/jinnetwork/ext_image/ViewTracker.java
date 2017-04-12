@@ -162,7 +162,7 @@ public class ViewTracker implements HTTPCallback {
             return;
         }
 
-        if (Looper.myLooper() == Looper.getMainLooper()) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
             __Log.w("Images", "Not In UILooper Post To UILooper");
             mHandler.post(new Runnable() {
                 @Override
