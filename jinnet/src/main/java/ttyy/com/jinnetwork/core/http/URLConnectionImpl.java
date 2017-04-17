@@ -6,7 +6,6 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -118,7 +117,7 @@ public class URLConnectionImpl implements Client {
 
                 requestEntity.writeTo(os);
 
-            }else if(mContentType == PostContentType.ApplicationForm){
+            }else if(mContentType == PostContentType.FormURLEncoded){
 
                 LinkedList<NameValuePair> params = new LinkedList<>();
                 for (Map.Entry<String, Object> entry : worker.getParams().entrySet()) {

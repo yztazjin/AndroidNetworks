@@ -12,9 +12,9 @@ public enum PostContentType {
 
     ApplicationJson("application/json"),
 
-    ApplicationForm("application/x-www-form-urlencoded"),
+    FormURLEncoded("application/x-www-form-urlencoded"),
 
-    MultipartFormadata("multipart/form-data");
+    MultipartFormdata("multipart/form-data");
 
     String content;
 

@@ -30,7 +30,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
@@ -130,7 +129,7 @@ public class ApacheHttpClientImpl implements Client {
                 StringEntity requestEntity = new StringEntity(jsonText, "utf-8");
                 post.setEntity(requestEntity);
 
-            } else if (mContentType == PostContentType.ApplicationForm) {
+            } else if (mContentType == PostContentType.FormURLEncoded) {
 
                 LinkedList<NameValuePair> params = new LinkedList<>();
                 for (Map.Entry<String, Object> entry : worker.getParams().entrySet()) {

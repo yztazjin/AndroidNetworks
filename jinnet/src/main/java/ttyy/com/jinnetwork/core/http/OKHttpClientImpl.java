@@ -104,7 +104,7 @@ public class OKHttpClientImpl implements Client {
             String jsonText = $Converter.toJson(worker).toString();
             RequestBody requestBody = RequestBody.create(MediaType.parse(mContentType.value()), jsonText);
             requestBuilder.post(requestBody);
-        }else if(mContentType == PostContentType.ApplicationForm){
+        }else if(mContentType == PostContentType.FormURLEncoded){
 
             FormBody.Builder builder = new FormBody.Builder();
             for (Map.Entry<String, Object> entry : worker.getParams().entrySet()) {
