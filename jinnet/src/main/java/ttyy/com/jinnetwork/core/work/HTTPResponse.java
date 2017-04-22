@@ -23,6 +23,12 @@ public interface HTTPResponse {
     int getStatusCode();
 
     /**
+     * 状态码是不是成功的
+     * @return
+     */
+    boolean isStatusCodeSuccessful();
+
+    /**
      * 获取Header
      * @param key
      * @return

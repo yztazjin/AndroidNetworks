@@ -18,7 +18,8 @@ import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
-import ttyy.com.jinnetwork.ext_image.processor.Compressor;
+import ttyy.com.jinnetwork.ext_image.compressor.Compressor;
+import ttyy.com.jinnetwork.ext_image.compressor.JinCompressor;
 
 /**
  * author: admin
@@ -73,7 +74,7 @@ public class ViewTracker implements HTTPCallback {
 
         if (placeHolderId > 0) {
             setImageIntoView(placeHolderId);
-        }else {
+        } else {
             __Log.w("Images", "Hasn't Set The PreStart ResourceId");
         }
     }
@@ -133,7 +134,7 @@ public class ViewTracker implements HTTPCallback {
         __Log.i("Images", "onFailure " + mSourceTokenURL);
         if (errorId > 0) {
             setImageIntoView(errorId);
-        }else {
+        } else {
             __Log.w("Images", "Hasn't Set The Failure ResourceId");
         }
     }
@@ -153,7 +154,7 @@ public class ViewTracker implements HTTPCallback {
      * @return
      */
     public Bitmap decodeFileToBitmap(File file) {
-        return Compressor.get().compressToBitmap(file);
+        return JinCompressor.get().compress(file);
     }
 
     public void setImageIntoView(final int id) {
@@ -223,8 +224,10 @@ public class ViewTracker implements HTTPCallback {
      * @param id
      */
     public void onImageLoadSuccessAnimation(int id) {
-        Animation anim = AnimationUtils.loadAnimation(view.getContext(), id);
-        view.startAnimation(anim);
+        if (id > 0) {
+            Animation anim = AnimationUtils.loadAnimation(view.getContext(), id);
+            view.startAnimation(anim);
+        }
     }
 
     /**

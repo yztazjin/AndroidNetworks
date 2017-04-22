@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import ttyy.com.jinnetwork.Https;
+import ttyy.com.jinnetwork.Images;
 import ttyy.com.jinnetwork.core.callback.HTTPUIThreadCallbackAdapter;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
@@ -40,7 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
         datas = new ArrayList<>();
 
-        requestGankIODatas();
+        String path = "file://"+Environment.getExternalStorageDirectory().getAbsolutePath()+"/test_bg.jpg";
+        ImageView local_iv = (ImageView) findViewById(R.id.local_iv);
+        Images.get().source(path)
+                .placeholder(R.drawable.shape_pre)
+                .error(R.drawable.shape_err)
+                .into(local_iv);
+
+//        requestGankIODatas();
+
     }
 
     void requestGankIODatas(){

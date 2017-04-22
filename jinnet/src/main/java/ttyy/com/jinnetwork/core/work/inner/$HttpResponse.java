@@ -70,6 +70,25 @@ public class $HttpResponse implements HTTPResponse {
     }
 
     @Override
+    public boolean isStatusCodeSuccessful() {
+        if(mHttpStatusCode == 200
+                || mHttpStatusCode == 416
+                || mHttpStatusCode == 206
+                || mHttpStatusCode == 100
+                || mHttpStatusCode == 101
+                || mHttpStatusCode == 102){
+            // 416 206 断点续传相关
+            // 200 正常状态码
+            // 100 图片加载 加载磁盘thumb缓存专用状态码
+            // 101 图片加载 加载内存缓存专用状态码
+            // 102 从磁盘文件中获取数据状态码
+            return true;
+
+        }
+        return false;
+    }
+
+    @Override
     public String getHeader(String key) {
         return mHeadersDict.get(key);
     }

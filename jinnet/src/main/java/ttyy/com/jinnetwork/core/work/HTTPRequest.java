@@ -190,9 +190,7 @@ public class HTTPRequest {
 
         if (rsp != null) {
             if (callback != null) {
-                if (rsp.getStatusCode() == 200
-                        || rsp.getStatusCode() == 416
-                        || rsp.getStatusCode() == 206) {
+                if (rsp.isStatusCodeSuccessful()) {
                     // 416 206 断点续传相关
                     callback.onSuccess(rsp);
                 } else {
@@ -236,9 +234,7 @@ public class HTTPRequest {
         }
         if (rsp != null) {
             if (callback != null) {
-                if (rsp.getStatusCode() == 200
-                        || rsp.getStatusCode() == 416
-                        || rsp.getStatusCode() == 206) {
+                if (rsp.isStatusCodeSuccessful()) {
                     // 416 206 断点续传相关
                     callback.onSuccess(rsp);
                 } else {

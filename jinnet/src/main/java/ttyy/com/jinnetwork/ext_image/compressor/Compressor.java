@@ -1,4 +1,4 @@
-package ttyy.com.jinnetwork.ext_image.processor;
+package ttyy.com.jinnetwork.ext_image.compressor;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
