@@ -1,5 +1,7 @@
 package ttyy.com.jinnetwork.core.work.inner;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -160,12 +162,16 @@ public class $HttpResponse implements HTTPResponse {
         if(file != null){
             totalLength = file.length() + mContentLength;
         }
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
         try {
             FileOutputStream fos = new FileOutputStream(file, true);
+            bis = new BufferedInputStream(stream);
+            bos = new BufferedOutputStream(fos);
             byte[] buffer = new byte[4096];
             int length = 0;
-            while ((length = stream.read(buffer)) != -1){
-                fos.write(buffer, 0, length);
+            while ((length = bis.read(buffer)) != -1){
+                bos.write(buffer, 0, length);
 
                 if(request.isCanceled()){
                     break;
@@ -174,9 +180,7 @@ public class $HttpResponse implements HTTPResponse {
                     callback.onProgress(this, file.length() , totalLength);
                 }
             }
-            fos.flush();
-            fos.close();
-            stream.close();
+            bos.flush();
         } catch (FileNotFoundException e) {
             __Log.w("Https", "Error "+e.getMessage());
             file.delete();
@@ -187,6 +191,20 @@ public class $HttpResponse implements HTTPResponse {
             file.delete();
             setStatusCode(-1);
             setErrorMessage("IOException "+e.getMessage());
+        } finally {
+            try {
+                if(bis != null){
+                    bis.close();
+                }else {
+                    stream.close();
+                }
+
+                if(bos != null){
+                    bos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
