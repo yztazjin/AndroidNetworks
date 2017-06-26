@@ -18,7 +18,6 @@ import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
-import ttyy.com.jinnetwork.ext_image.compressor.Compressor;
 import ttyy.com.jinnetwork.ext_image.compressor.JinCompressor;
 
 /**
