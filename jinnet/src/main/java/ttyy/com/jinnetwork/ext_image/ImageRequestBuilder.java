@@ -3,9 +3,9 @@ package ttyy.com.jinnetwork.ext_image;
 import android.view.View;
 
 import java.io.File;
-import java.io.InputStream;
 
 import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
+import ttyy.com.jinnetwork.ext_image.compressor.JinCompressor;
 
 /**
  * author: admin
@@ -85,6 +85,15 @@ public interface ImageRequestBuilder {
      * @return
      */
     ImageRequestBuilder source(File file);
+
+    /**
+     * 图片压缩参数配置
+     * @param config
+     * @return
+     */
+    ImageRequestBuilder compressConfig(JinCompressor.Config config);
+
+    JinCompressor.Config getCompressConfig();
 
     /**
      * 开始加载

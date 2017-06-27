@@ -10,6 +10,7 @@ import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCache;
 import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
+import ttyy.com.jinnetwork.ext_image.compressor.JinCompressor;
 
 /**
  * author: admin
@@ -31,9 +32,12 @@ public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements Im
 
     protected int mAnimId;
 
+    protected JinCompressor.Config mConfig;
+
     public HTTPRequestImageBuilder(){
         super();
         mCacheType = ImageCacheType.AllCache;
+        mConfig = JinCompressor.Config.getInstance();
     }
 
     @Override
@@ -107,6 +111,17 @@ public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements Im
         String uri = "file://"+file.getAbsolutePath();
         setResponseFile(file);
         return source(uri);
+    }
+
+    @Override
+    public ImageRequestBuilder compressConfig(JinCompressor.Config config) {
+        this.mConfig = config;
+        return this;
+    }
+
+    @Override
+    public JinCompressor.Config getCompressConfig() {
+        return this.mConfig;
     }
 
     @Override

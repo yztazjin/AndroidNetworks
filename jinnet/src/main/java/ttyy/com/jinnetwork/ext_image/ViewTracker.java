@@ -45,6 +45,8 @@ public abstract class ViewTracker implements HTTPCallback {
 
     protected ImageCacheType mImageCacheType;
 
+    protected JinCompressor.Config mJinCompressConfig;
+
     public ViewTracker(View view) {
         this.view = view;
     }
@@ -55,6 +57,7 @@ public abstract class ViewTracker implements HTTPCallback {
         mAnimId = builder.getAnimResources();
         mTransition = builder.getTransition();
         mImageCacheType = builder.getImageCacheType();
+        mJinCompressConfig = builder.getCompressConfig();
 
         mSourceTokenURL = builder.getDecoratedRequestURL();
         if (!TextUtils.isEmpty(mSourceTokenURL)) {
@@ -157,7 +160,7 @@ public abstract class ViewTracker implements HTTPCallback {
      * @return
      */
     public Bitmap decodeFileToBitmap(File file) {
-        return JinCompressor.get().compress(file);
+        return JinCompressor.get().compress(mJinCompressConfig, file.getAbsolutePath());
     }
 
     /**

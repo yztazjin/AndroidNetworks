@@ -28,15 +28,15 @@ public class JinCompressor {
 
     public Bitmap compress(String path){
 
-        return compress(SourceConfig.get().setBitmapFilePath(path));
+        return compress(Config.getInstance(), path);
     }
 
     public Bitmap compress(File file){
 
-        return compress(SourceConfig.get().setBitmapFile(file));
+        return compress(file.getAbsolutePath());
     }
 
-    public Bitmap compress(SourceConfig config){
+    public Bitmap compress(Config config, String path){
 
         if(config == null){
             return null;
@@ -44,7 +44,7 @@ public class JinCompressor {
 
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(config.getBitmapFilePath(), opts);
+        BitmapFactory.decodeFile(path, opts);
 
         int i = 0;
         int byteFactor = getByteFactor(config.getBitmapConfig());
@@ -57,7 +57,7 @@ public class JinCompressor {
         opts.inSampleSize = i;
         opts.inPreferredConfig = config.getBitmapConfig();
         opts.inJustDecodeBounds = false;
-        Bitmap bm = BitmapFactory.decodeFile(config.getBitmapFilePath(), opts);
+        Bitmap bm = BitmapFactory.decodeFile(path, opts);
 
         return bm;
     }
@@ -81,47 +81,36 @@ public class JinCompressor {
         return 4;
     }
 
-    static class SourceConfig{
+    public static class Config {
 
-        private String mPath;
         private Bitmap.Config mConfig;
         private int mMaxMemorySize;
 
-        private SourceConfig(){
+        private Config(){
             mConfig = Bitmap.Config.RGB_565;
             mMaxMemorySize = 1024 * 1024; // 图片最大占用内存不能超过1M
         }
 
-        public static SourceConfig get(){
-            return new SourceConfig();
+        static class Holder{
+            static Config INSTANCE = new Config();
         }
 
-        public SourceConfig setBitmapFilePath(String path){
-            this.mPath = path;
-            return this;
+        public static Config getInstance(){
+            return Holder.INSTANCE;
         }
 
-        public SourceConfig setBitmapFile(File file){
-            if(file != null
-                    && file.exists()){
-                return setBitmapFilePath(file.getAbsolutePath());
-            }
-
-            return this;
+        public static Config createInstance(){
+            return new Config();
         }
 
-        public SourceConfig setBitmapConfig(Bitmap.Config config){
+        public Config setBitmapConfig(Bitmap.Config config){
             this.mConfig = config;
             return this;
         }
 
-        public SourceConfig setMaxMemorySize(int byteSize){
+        public Config setMaxMemorySize(int byteSize){
             this.mMaxMemorySize = byteSize;
             return this;
-        }
-
-        public String getBitmapFilePath(){
-            return this.mPath;
         }
 
         public int getMaxMemorySize(){
@@ -130,10 +119,6 @@ public class JinCompressor {
 
         public Bitmap.Config getBitmapConfig(){
             return this.mConfig;
-        }
-
-        public File getBitmapFile(){
-            return new File(mPath);
         }
 
     }
