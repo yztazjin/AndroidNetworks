@@ -1,14 +1,12 @@
 package ttyy.com.jinnetwork.ext_image;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 import java.io.File;
 
@@ -22,36 +20,36 @@ import ttyy.com.jinnetwork.ext_image.compressor.JinCompressor;
 
 /**
  * author: admin
- * date: 2017/03/03
+ * date: 2017/06/27
  * version: 0
  * mail: secret
  * desc: ViewTracker
  */
 
-public class ViewTracker implements HTTPCallback {
+public abstract class ViewTracker implements HTTPCallback {
 
-    Handler mHandler = new Handler(Looper.getMainLooper());
+    protected Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private int placeHolderId;
+    protected int placeHolderId;
 
-    private int errorId;
+    protected int errorId;
 
-    private ImageTransition mTransition;
+    protected ImageTransition mTransition;
 
-    private int mAnimId;
+    protected int mAnimId;
 
-    private View view;
+    protected View view;
 
-    private String mSourceTokenURL;
-    private int mSourceToken;
+    protected String mSourceTokenURL;
+    protected int mSourceToken;
 
-    private ImageCacheType mImageCacheType;
+    protected ImageCacheType mImageCacheType;
 
     public ViewTracker(View view) {
         this.view = view;
     }
 
-    public void loadResouces(HTTPRequestImageBuilder builder) {
+    public final void loadResouces(HTTPRequestImageBuilder builder) {
         placeHolderId = builder.getPlaceHolderResources();
         errorId = builder.getErrorResources();
         mAnimId = builder.getAnimResources();
@@ -68,22 +66,17 @@ public class ViewTracker implements HTTPCallback {
     }
 
     @Override
-    public void onPreStart(HTTPRequest request) {
-        __Log.i("Images", "onPreStart " + mSourceTokenURL);
-
-        if (placeHolderId > 0) {
-            setImageIntoView(placeHolderId);
-        } else {
-            __Log.w("Images", "Hasn't Set The PreStart ResourceId");
-        }
+    public final void onPreStart(HTTPRequest request) {
+        __Log.i("Images", "onLoadPreStart " + mSourceTokenURL);
     }
 
     @Override
-    public void onProgress(HTTPResponse request, long cur, long total) {
+    public void onProgress(HTTPResponse response, long cur, long total) {
+
     }
 
     @Override
-    public void onSuccess(HTTPResponse response) {
+    public final void onSuccess(HTTPResponse response) {
         if (isRespFromRuntimCache(response)) {
             // 从磁盘缓存成功 不需要设置解析文件 外层直接通过setBitmap
             return;
@@ -100,7 +93,7 @@ public class ViewTracker implements HTTPCallback {
             return;
         }
 
-        __Log.i("Images", "onSuccess " + mSourceTokenURL);
+        __Log.i("Images", "onLoadSuccess " + mSourceTokenURL);
 
         // 是否需要磁盘缓存
         if (mImageCacheType.useDiskCache()
@@ -115,40 +108,36 @@ public class ViewTracker implements HTTPCallback {
 
         if (isViewTracked()) {
             // Btimap处理 在线程中处理Bitmap
-            bm = preSetBitmapIntoView(bm);
-            setImageIntoView(bm);
+            onImageLoadSuccess(response, bm);
+
+            // 加载成功动画
+            if (mAnimId > 0) {
+                Animation anim = AnimationUtils.loadAnimation(view.getContext(), mAnimId);
+                view.startAnimation(anim);
+            }
+
         } else {
             __Log.w("Images", "View Not Tracked Ignored It");
         }
-
     }
 
     @Override
     public void onCancel(HTTPRequest response) {
-        __Log.i("Images", "onCancel " + mSourceTokenURL);
+        __Log.i("Images", "onLoadCancel " + mSourceTokenURL);
     }
 
     @Override
     public void onFailure(HTTPResponse response) {
-        __Log.i("Images", "onFailure " + mSourceTokenURL);
-        if (errorId > 0) {
-            setImageIntoView(errorId);
-        } else {
-            __Log.w("Images", "Hasn't Set The Failure ResourceId");
-        }
+        __Log.i("Images", "onLoadFailure " + mSourceTokenURL);
     }
 
     @Override
     public void onFinish(HTTPResponse response) {
-    }
-
-    public final View getTargetView() {
-        return view;
+        __Log.i("Images", "onLoadFinish " + mSourceTokenURL);
     }
 
     /**
      * 解析File
-     *
      * @param file
      * @return
      */
@@ -156,98 +145,19 @@ public class ViewTracker implements HTTPCallback {
         return JinCompressor.get().compress(file);
     }
 
-    public void setImageIntoView(final int id) {
-        if (!isViewTracked()) {
-            __Log.w("Images", "View Not Tracked Ignored It");
-            return;
-        }
-
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            __Log.w("Images", "Not In UILooper Post To UILooper");
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    setImageIntoView(id);
-                }
-            });
-        } else {
-            if (view instanceof ImageView) {
-                ((ImageView) view).setImageResource(id);
-            } else {
-                view.setBackgroundResource(id);
-            }
-        }
-    }
-
-    public void setImageIntoView(final Bitmap bm) {
-        if (!isViewTracked()) {
-            __Log.w("Images", "View Not Tracked Ignored It");
-            return;
-        }
-
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            __Log.w("Images", "Not In UILooper Post To UILooper");
-            // 不在UI主线程
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    setImageIntoView(bm);
-                }
-            });
-        } else {
-            // 正在排队的任务忽略掉
-            mHandler.removeCallbacksAndMessages(null);
-            // 在UI主线程
-            Bitmap mSuccessBitmap = bm;
-            if (mTransition != null) {
-                mSuccessBitmap = mTransition.translate(bm);
-            }
-
-            if (view instanceof ImageView) {
-                ((ImageView) view).setImageBitmap(mSuccessBitmap);
-            } else {
-                view.setBackgroundDrawable(new BitmapDrawable(mSuccessBitmap));
-            }
-
-            // 加载动画
-            onImageLoadSuccessAnimation(mAnimId);
-            // 加载完成后
-            afterSetBitmapIntoView(mSuccessBitmap);
-        }
-
+    /**
+     * 该次回调需要设置图片的View
+     * @return
+     */
+    public final View getTargetView() {
+        return view;
     }
 
     /**
-     * 图片加载成功后的动画
-     *
-     * @param id
+     * View加载的图url与View相适配
+     * 避免ListView View乱加载图片
+     * @return
      */
-    public void onImageLoadSuccessAnimation(int id) {
-        if (id > 0) {
-            Animation anim = AnimationUtils.loadAnimation(view.getContext(), id);
-            view.startAnimation(anim);
-        }
-    }
-
-    /**
-     * 加载成功设置图片之前
-     *
-     * @param bm
-     */
-    public Bitmap preSetBitmapIntoView(Bitmap bm) {
-
-        return bm;
-    }
-
-    /**
-     * 加载成功设置图片之后
-     *
-     * @param bm
-     */
-    public void afterSetBitmapIntoView(Bitmap bm) {
-
-    }
-
     public boolean isViewTracked() {
         if (view.getTag() != null
                 && view.getTag().equals(mSourceToken)) {
@@ -279,4 +189,11 @@ public class ViewTracker implements HTTPCallback {
         return response.getStatusCode() == 102;
     }
 
+    /**
+     * 图片加载之前
+     * @param request
+     */
+    public abstract void onImageLoadPre(HTTPRequest request);
+
+    public abstract void onImageLoadSuccess(HTTPResponse response, Bitmap bm);
 }
