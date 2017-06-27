@@ -68,10 +68,11 @@ public abstract class ViewTracker implements HTTPCallback {
     @Override
     public final void onPreStart(HTTPRequest request) {
         __Log.i("Images", "onLoadPreStart " + mSourceTokenURL);
+        __ImageLoadPreProxy(request);
     }
 
     @Override
-    public void onProgress(HTTPResponse response, long cur, long total) {
+    public final void onProgress(HTTPResponse response, long cur, long total) {
 
     }
 
@@ -106,34 +107,48 @@ public abstract class ViewTracker implements HTTPCallback {
             ImageCache.getInstance().setIntoRuntimeCache(mSourceTokenURL, bm);
         }
 
-        if (isViewTracked()) {
-            // Btimap处理 在线程中处理Bitmap
-            onImageLoadSuccess(response, bm);
+        __ImageLoadSuccessProxy(response, bm);
+    }
 
-            // 加载成功动画
-            if (mAnimId > 0) {
-                Animation anim = AnimationUtils.loadAnimation(view.getContext(), mAnimId);
-                view.startAnimation(anim);
+    @Override
+    public final void onCancel(HTTPRequest response) {
+        __Log.i("Images", "Sys CancelLoad " + mSourceTokenURL);
+    }
+
+    @Override
+    public final void onFailure(final HTTPResponse response) {
+        __Log.i("Images", "onLoadFailure " + mSourceTokenURL);
+        if(isViewTracked()){
+            if(Looper.myLooper() == Looper.getMainLooper()){
+                onImageLoadFailure(response);
+            }else {
+                __Log.w("Images", "Not In UILooper Post To UILooper");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onFailure(response);
+                    }
+                });
             }
-
-        } else {
-            __Log.w("Images", "View Not Tracked Ignored It");
         }
     }
 
     @Override
-    public void onCancel(HTTPRequest response) {
-        __Log.i("Images", "onLoadCancel " + mSourceTokenURL);
-    }
-
-    @Override
-    public void onFailure(HTTPResponse response) {
-        __Log.i("Images", "onLoadFailure " + mSourceTokenURL);
-    }
-
-    @Override
-    public void onFinish(HTTPResponse response) {
+    public final void onFinish(final HTTPResponse response) {
         __Log.i("Images", "onLoadFinish " + mSourceTokenURL);
+        if(isViewTracked()){
+            if(Looper.myLooper() == Looper.getMainLooper()){
+                onImageLoadFinish(response);
+            }else {
+                __Log.w("Images", "Not In UILooper Post To UILooper");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onFinish(response);
+                    }
+                });
+            }
+        }
     }
 
     /**
@@ -190,10 +205,88 @@ public abstract class ViewTracker implements HTTPCallback {
     }
 
     /**
+     * UI操作应该在主线程
+     * @param request
+     */
+    public final void __ImageLoadPreProxy(final HTTPRequest request){
+        if(isViewTracked()){
+            if(Looper.myLooper() == Looper.getMainLooper()){
+                onImageLoadPre(request);
+            }else {
+                __Log.w("Images", "Not In UILooper Post To UILooper");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        __ImageLoadPreProxy(request);
+                    }
+                });
+            }
+        }else {
+            __Log.w("Images", "View Not Tracked Ignored It");
+        }
+    }
+
+    /**
+     * UI操作应该在主线程
+     * @param response
+     * @param bm
+     */
+    public final void __ImageLoadSuccessProxy(final HTTPResponse response, final Bitmap bm){
+        if (isViewTracked()) {
+
+            if(Looper.myLooper() == Looper.getMainLooper()){
+                // Btimap处理 在线程中处理Bitmap
+                onImageLoadSuccess(response, bm);
+
+                // 加载成功动画
+                if (mAnimId > 0) {
+                    Animation anim = AnimationUtils.loadAnimation(view.getContext(), mAnimId);
+                    view.startAnimation(anim);
+                }
+            }else {
+                __Log.w("Images", "Not In UILooper Post To UILooper");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 正在排队的任务忽略掉
+                        mHandler.removeCallbacksAndMessages(null);
+                        __ImageLoadSuccessProxy(response, bm);
+                    }
+                });
+            }
+
+        } else {
+            __Log.w("Images", "View Not Tracked Ignored It");
+        }
+    }
+
+    /**
      * 图片加载之前
      * @param request
      */
     public abstract void onImageLoadPre(HTTPRequest request);
 
+    /**
+     * 图片加载成功
+     * @param response
+     * @param bm
+     */
     public abstract void onImageLoadSuccess(HTTPResponse response, Bitmap bm);
+
+    /**
+     * 图片加载失败
+     * @param response
+     */
+    public void onImageLoadFailure(HTTPResponse response){
+
+    }
+
+    /**
+     * 图片加载结束
+     * @param response
+     */
+    public void onImageLoadFinish(HTTPResponse response){
+
+    }
+
 }
