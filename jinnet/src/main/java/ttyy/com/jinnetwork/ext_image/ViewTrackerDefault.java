@@ -2,7 +2,6 @@ package ttyy.com.jinnetwork.ext_image;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -39,8 +38,8 @@ public class ViewTrackerDefault extends ViewTracker {
     }
 
     @Override
-    public void onFailure(HTTPResponse response) {
-        super.onFailure(response);
+    public void onImageLoadFailure(HTTPResponse response) {
+        super.onImageLoadFailure(response);
         if (errorId > 0) {
             setImageIntoView(errorId);
         } else {
@@ -49,59 +48,26 @@ public class ViewTrackerDefault extends ViewTracker {
     }
 
     public void setImageIntoView(final int id) {
-        if (!isViewTracked()) {
-            __Log.w("Images", "View Not Tracked Ignored It");
-            return;
-        }
-
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            __Log.w("Images", "Not In UILooper Post To UILooper");
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    setImageIntoView(id);
-                }
-            });
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageResource(id);
         } else {
-            if (view instanceof ImageView) {
-                ((ImageView) view).setImageResource(id);
-            } else {
-                view.setBackgroundResource(id);
-            }
+            view.setBackgroundResource(id);
         }
     }
 
     public void setImageIntoView(final Bitmap bm) {
-        if (!isViewTracked()) {
-            __Log.w("Images", "View Not Tracked Ignored It");
-            return;
+        // 在UI主线程
+        Bitmap mSuccessBitmap = bm;
+        if (mTransition != null) {
+            mSuccessBitmap = mTransition.translate(bm);
         }
 
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            __Log.w("Images", "Not In UILooper Post To UILooper");
-            // 不在UI主线程
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    setImageIntoView(bm);
-                }
-            });
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageBitmap(mSuccessBitmap);
         } else {
-            // 正在排队的任务忽略掉
-            mHandler.removeCallbacksAndMessages(null);
-            // 在UI主线程
-            Bitmap mSuccessBitmap = bm;
-            if (mTransition != null) {
-                mSuccessBitmap = mTransition.translate(bm);
-            }
-
-            if (view instanceof ImageView) {
-                ((ImageView) view).setImageBitmap(mSuccessBitmap);
-            } else {
-                view.setBackgroundDrawable(new BitmapDrawable(mSuccessBitmap));
-            }
-
+            view.setBackgroundDrawable(new BitmapDrawable(mSuccessBitmap));
         }
+
 
     }
 
