@@ -136,7 +136,7 @@ public class HTTPImageRequest extends HTTPRequest {
             getHttpCallback().onSuccess(rsp);
             // 回调设置ImageView图片资源
             if(tracker.isViewTracked()){
-                tracker.onImageLoadSuccess(rsp, bm);
+                tracker.__ImageLoadSuccessProxy(rsp, bm);
                 tracker.onFinish(rsp);
             }
 
