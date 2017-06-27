@@ -122,7 +122,7 @@ public class HTTPRequestImageBuilder extends HTTPRequestGetBuilder implements Im
             ImageCache.getInstance().setDiskCacheDir(context);
         }
 
-        into(new ViewTracker(view));
+        into(new ViewTrackerDefault(view));
     }
 
     @Override
