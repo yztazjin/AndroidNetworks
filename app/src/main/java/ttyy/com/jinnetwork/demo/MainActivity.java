@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
                 .error(R.drawable.shape_err)
                 .into(local_iv);
 
-//        requestGankIODatas();
-
-
-        testDownload();
+        requestGankIODatas();
+//
+//
+//        testDownload();
     }
 
     void requestGankIODatas(){

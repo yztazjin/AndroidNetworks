@@ -249,7 +249,7 @@ public abstract class ViewTracker implements HTTPCallback {
                     @Override
                     public void run() {
                         // 正在排队的任务忽略掉
-                        mHandler.removeCallbacksAndMessages(null);
+//                        mHandler.removeCallbacksAndMessages(null);
                         __ImageLoadSuccessProxy(response, bm);
                     }
                 });
