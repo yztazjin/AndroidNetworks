@@ -134,8 +134,11 @@ public class HTTPImageRequest extends HTTPRequest {
 
             getHttpCallback().onProgress(rsp, rsp.getContentLength(), rsp.getContentLength());
             getHttpCallback().onSuccess(rsp);
-            tracker.setImageIntoView(bm);
-            tracker.onFinish(rsp);
+            // 回调设置ImageView图片资源
+            if(tracker.isViewTracked()){
+                tracker.onImageLoadSuccess(rsp, bm);
+                tracker.onFinish(rsp);
+            }
 
             return rsp;
         }
