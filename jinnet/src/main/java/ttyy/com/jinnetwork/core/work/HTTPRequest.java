@@ -291,8 +291,27 @@ public class HTTPRequest {
         return builder.isEnableRemoveSameRequest();
     }
 
+    /**
+     * 先判断hashcode获取到的地址是否相同
+     * hashCode若相同那么说明equals相同
+     * Object equals方法只判断地址,
+     * String equals方法先判断地址是否相同，不同就比较具体的值
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
+        // obj null 肯定不相等
+        if(obj == null){
+            return false;
+        }
+
+        // 比较地址
+        if(hashCode() == obj.hashCode()){
+            return true;
+        }
+
+        // 比较值
         if(obj instanceof HTTPRequest){
             HTTPRequest t_obj = (HTTPRequest) obj;
 
@@ -304,6 +323,10 @@ public class HTTPRequest {
         return false;
     }
 
+    /**
+     * 默认情况下返回的是对象在JVM下的32位地址
+     * @return
+     */
     @Override
     public int hashCode() {
         if(isEnableRemoveSameRequest()){
