@@ -197,10 +197,11 @@ public class HTTPRequest {
                     // 出错
                     callback.onFailure(rsp);
                 }
+
+                // 回调终点
+                callback.onFinish(rsp);
             }
 
-            // 回调终点
-            getHttpCallback().onFinish(rsp);
         }
 
         return rsp;
@@ -241,10 +242,10 @@ public class HTTPRequest {
                     // 出错
                     callback.onFailure(rsp);
                 }
-            }
 
-            // 回调终点
-            getHttpCallback().onFinish(rsp);
+                // 回调终点
+                callback.onFinish(rsp);
+            }
         }
 
         return rsp;
