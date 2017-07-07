@@ -6,7 +6,8 @@ import ttyy.com.jinnetwork.core.config.HTTPConfig;
 import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
 import ttyy.com.jinnetwork.core.work.method_post.HTTPRequestPostBuilder;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
-import ttyy.com.jinnetwork.ext_reflect.APIRequestProxy;
+import ttyy.com.jinnetwork.ext_reflect.APIRequestProxyInner;
+import ttyy.com.jinnetwork.ext_reflect.BaseAPIRequestProxy;
 
 /**
  * author: admin
@@ -68,7 +69,28 @@ public class Https {
      */
     public static <T> T createService(Class<T> clazz) {
 
-        APIRequestProxy proxy = new APIRequestProxy();
+        APIRequestProxyInner proxy = new APIRequestProxyInner();
+
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, proxy);
+    }
+
+    /**
+     * 动态代理 + 注解模式 + 用户自定义
+     *
+     * @param proxyClass
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T createService(Class<? extends BaseAPIRequestProxy> proxyClass, Class<T> clazz) {
+        BaseAPIRequestProxy proxy = null;
+        try {
+            proxy = proxyClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, proxy);
     }
