@@ -10,8 +10,17 @@ package ttyy.com.jinnetwork.core.work;
 
 public enum HTTPMethod {
 
+    /**
+     * Client.get
+     */
     GET("GET"),
+    /**
+     * Client.post
+     */
     POST("POST"),
+    /**
+     * 此Method会回调到Client中特殊标出的方法
+     */
     SPECIAL("USER_CUSTOM_METHOD");
 
     String desc;
