@@ -11,7 +11,8 @@ package ttyy.com.jinnetwork.core.work;
 public enum HTTPMethod {
 
     GET("GET"),
-    POST("POST");
+    POST("POST"),
+    SPECIAL("USER_CUSTOM_METHOD");
 
     String desc;
     HTTPMethod(String value){
