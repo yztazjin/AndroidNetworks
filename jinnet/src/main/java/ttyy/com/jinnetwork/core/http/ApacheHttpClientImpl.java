@@ -190,6 +190,15 @@ public class ApacheHttpClientImpl implements Client {
         return call(get, worker);
     }
 
+    @Override
+    public HTTPResponse special(HTTPRequest request) {
+        // 默认提供的ApacheHttpClient 不支持 用户自定义操作
+        $HttpResponse err = new $HttpResponse(request);
+        err.setStatusCode(-1);
+        err.setErrorMessage("默认提供的ApacheHttpClient不支持用户自定义HTTP请求方式");
+        return err;
+    }
+
     private HTTPResponse call(HttpUriRequest request, HTTPRequest worker) {
         // 开始发射，请求吧
         $HttpResponse response = new $HttpResponse(worker);

@@ -176,14 +176,19 @@ public class HTTPRequest {
         }
 
         if(builder.mHttpMethod == HTTPMethod.GET){
+            // GET
             rsp = mClient.get(this);
         }else if(builder.mHttpMethod == HTTPMethod.POST){
+            // POST
             rsp = mClient.post(this);
+        }else if(builder.mHttpMethod == HTTPMethod.SPECIAL){
+            // USER CUSTOM SPECIAL
+            rsp = mClient.special(this);
         }else {
             // 没有HttpMethod
             $HttpResponse empty = new $HttpResponse(this);
             empty.setStatusCode(-1);
-            empty.setErrorMessage("没有发现何时的HttpMethod");
+            empty.setErrorMessage("没有发现任何合适的HttpMethod");
 
             rsp = empty;
         }

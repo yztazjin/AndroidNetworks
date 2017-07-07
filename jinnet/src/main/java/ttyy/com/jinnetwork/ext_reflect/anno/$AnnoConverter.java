@@ -13,6 +13,7 @@ import ttyy.com.jinnetwork.core.work.HTTPMethod;
 import ttyy.com.jinnetwork.core.work.HTTPRequestBuilder;
 import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
 import ttyy.com.jinnetwork.core.work.method_post.HTTPRequestPostBuilder;
+import ttyy.com.jinnetwork.core.work.method_special.HTTPRequestSpecialBuilder;
 
 /**
  * author: admin
@@ -28,7 +29,7 @@ public class $AnnoConverter {
 
     }
 
-    public static HTTPRequest convert(Method method, Object[] args) {
+    public static HTTPRequestBuilder convert(Method method, Object[] args) {
 
         String url = null;
 
@@ -47,6 +48,9 @@ public class $AnnoConverter {
                 break;
             case POST:
                 builder = Https.post(url, mHttpMethodAnno.content_type());
+                break;
+            case SPECIAL:
+                builder = new HTTPRequestSpecialBuilder();
                 break;
         }
 
@@ -85,7 +89,7 @@ public class $AnnoConverter {
                     break;
                 } else if (ano.annotationType().equals(Callback.class)) {
                     // Request Callback
-                    if(args[i] instanceof HTTPCallback){
+                    if (args[i] instanceof HTTPCallback) {
                         HTTPCallback callback = (HTTPCallback) args[i];
                         builder.setHttpCallback(callback);
                     }
@@ -129,27 +133,53 @@ public class $AnnoConverter {
             }
         }
 
-        return builder.build();
+        return builder;
     }
 
     private static void addParam(HTTPMethod method, HTTPRequestBuilder builder, String key, Object param) {
 
         Class mParamType = param.getClass();
         if (mParamType.equals(File.class)) {
-            // get专属
 
-            if (method == HTTPMethod.GET) {
-                ((HTTPRequestGetBuilder) builder).setDownloadMode((File) param);
+            switch (method){
+                case GET:
+                    // get专属 下载
+                    ((HTTPRequestGetBuilder) builder).setDownloadMode((File) param);
+                    break;
+                case POST:
+                    // post专属 上传
+                    ((HTTPRequestPostBuilder) builder).addParam(key, (File) param);
+                    break;
+                case SPECIAL:
+                    // special专属 用户自定义
+                    builder.addParam(key, param);
+                    break;
+                default:
+                    break;
             }
+
         } else if (mParamType.equals(JSONObject.class)) {
-            // post专属
 
-            if (method == HTTPMethod.POST) {
-                ((HTTPRequestPostBuilder) builder).addParam(key, (JSONObject) param);
+            switch (method){
+                case GET:
+                    // get 没有对JSONObject的操作
+
+                    break;
+                case POST:
+                    // post专属
+                    ((HTTPRequestPostBuilder) builder).addParam(key, param);
+                    break;
+                case SPECIAL:
+                    // special专属 用户自定义
+                    builder.addParam(key, param);
+                    break;
+                default:
+                    break;
             }
-        } else {
-            // 其他参数
 
+        } else {
+
+            // 其他参数
             builder.addParam(key, param);
         }
 

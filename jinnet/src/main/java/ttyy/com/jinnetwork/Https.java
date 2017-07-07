@@ -6,7 +6,7 @@ import ttyy.com.jinnetwork.core.config.HTTPConfig;
 import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
 import ttyy.com.jinnetwork.core.work.method_post.HTTPRequestPostBuilder;
 import ttyy.com.jinnetwork.core.work.method_post.PostContentType;
-import ttyy.com.jinnetwork.ext_reflect.APIRequestProxyInner;
+import ttyy.com.jinnetwork.ext_reflect.$InnerAPIRequestProxy;
 import ttyy.com.jinnetwork.ext_reflect.BaseAPIRequestProxy;
 
 /**
@@ -69,7 +69,7 @@ public class Https {
      */
     public static <T> T createService(Class<T> clazz) {
 
-        APIRequestProxyInner proxy = new APIRequestProxyInner();
+        $InnerAPIRequestProxy proxy = new $InnerAPIRequestProxy();
 
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, proxy);
     }

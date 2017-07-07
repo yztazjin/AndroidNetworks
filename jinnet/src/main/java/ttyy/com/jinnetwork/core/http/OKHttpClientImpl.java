@@ -164,6 +164,15 @@ public class OKHttpClientImpl implements Client {
         return call(request, worker);
     }
 
+    @Override
+    public HTTPResponse special(HTTPRequest request) {
+        // 默认提供的OKHttpClient 不支持 用户自定义操作
+        $HttpResponse err = new $HttpResponse(request);
+        err.setStatusCode(-1);
+        err.setErrorMessage("默认提供的OKHttpClient不支持用户自定义HTTP请求方式");
+        return err;
+    }
+
     private HTTPResponse call(Request request, HTTPRequest worker){
         // 开始发射，请求吧
         $HttpResponse response = new $HttpResponse(worker);

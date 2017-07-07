@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import ttyy.com.jinnetwork.Https;
 import ttyy.com.jinnetwork.Images;
+import ttyy.com.jinnetwork.core.callback.HTTPCallback;
 import ttyy.com.jinnetwork.core.callback.HTTPUIThreadCallbackAdapter;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
@@ -53,6 +54,40 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //        testDownload();
+
+//        Https.createService(TestAPIProxy.class, TestAPI.class)
+//                .test(12, "params", new HTTPCallback() {
+//                    @Override
+//                    public void onPreStart(HTTPRequest request) {
+//                        Log.e("Test", "onPreStart param0 -> "+request.getParams().get("param0"));
+//                        Log.e("Test", "onPreStart param1 -> "+request.getParams().get("param1"));
+//                    }
+//
+//                    @Override
+//                    public void onProgress(HTTPResponse response, long cur, long total) {
+//                        Log.e("Test", "onProgress cur -> "+cur+" total -> "+total);
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(HTTPResponse response) {
+//                        Log.e("Test", "onSuccess");
+//                    }
+//
+//                    @Override
+//                    public void onCancel(HTTPRequest response) {
+//                        Log.e("Test", "onCancel");
+//                    }
+//
+//                    @Override
+//                    public void onFailure(HTTPResponse response) {
+//                        Log.e("Test", "onFailure -> "+response.getErrorMessage());
+//                    }
+//
+//                    @Override
+//                    public void onFinish(HTTPResponse response) {
+//                        Log.e("Test", "onFinish isSuccess -> "+response.isStatusCodeSuccessful());
+//                    }
+//                });
     }
 
     void requestGankIODatas(){

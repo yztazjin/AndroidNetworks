@@ -113,6 +113,7 @@ public class HTTPRequestGetBuilder extends HTTPRequestBuilder {
      * @param token
      * @return
      */
+    @Override
     public HTTPRequestGetBuilder setRequestUniqueToken(Object token){
         return (HTTPRequestGetBuilder)super.setRequestUniqueToken(token);
     }
@@ -122,6 +123,7 @@ public class HTTPRequestGetBuilder extends HTTPRequestBuilder {
      * @param value
      * @return
      */
+    @Override
     public HTTPRequestGetBuilder setIsEnableRemoveSameRequest(boolean value){
         return (HTTPRequestGetBuilder)super.setIsEnableRemoveSameRequest(value);
     }

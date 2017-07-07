@@ -13,8 +13,25 @@ import ttyy.com.jinnetwork.core.work.HTTPRequest;
 
 public interface Client {
 
+    /**
+     * HTTP Post
+     * @param worker
+     * @return
+     */
     HTTPResponse post(HTTPRequest worker);
 
+    /**
+     * HTTP Get
+     * @param worker
+     * @return
+     */
     HTTPResponse get(HTTPRequest worker);
+
+    /**
+     * HTTP User Custom Operation HTTP Special
+     * @param request
+     * @return
+     */
+    HTTPResponse special(HTTPRequest request);
 
 }

@@ -41,19 +41,23 @@ public class $HTTPUIThreadCallbackAdapterProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
 
-        // UIThread中执行
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    method.invoke(real, args);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+        // 确保在UIThread中执行
+        if(Looper.myLooper() != Looper.getMainLooper()){
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        method.invoke(real, args);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }else {
+            method.invoke(real, args);
+        }
 
         return null;
     }

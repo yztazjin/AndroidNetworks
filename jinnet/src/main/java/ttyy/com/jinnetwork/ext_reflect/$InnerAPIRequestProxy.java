@@ -9,10 +9,10 @@ import ttyy.com.jinnetwork.core.work.HTTPRequestBuilder;
  * date: 2017/03/01
  * version: 0
  * mail: secret
- * desc: APIRequestProxyInner
+ * desc: $InnerAPIRequestProxy
  */
 
-public class APIRequestProxyInner extends BaseAPIRequestProxy{
+public class $InnerAPIRequestProxy extends BaseAPIRequestProxy {
 
     @Override
     public HTTPRequestBuilder richBuilder(HTTPRequestBuilder builder, Method method, Object[] args) {

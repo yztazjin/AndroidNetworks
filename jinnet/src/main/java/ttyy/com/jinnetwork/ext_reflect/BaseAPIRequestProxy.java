@@ -14,10 +14,10 @@ import ttyy.com.jinnetwork.ext_reflect.anno.$AnnoConverter;
  * desc: BaseAPIRequestProxy
  */
 
-public abstract class BaseAPIRequestProxy implements InvocationHandler {
+public class BaseAPIRequestProxy implements InvocationHandler {
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public final Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         HTTPRequestBuilder requestBuilder = $AnnoConverter.convert(method, args);
         richBuilder(requestBuilder, method, args);
         requestBuilder.build().requestAsync();
@@ -31,5 +31,7 @@ public abstract class BaseAPIRequestProxy implements InvocationHandler {
      * @param args
      * @return
      */
-    public abstract HTTPRequestBuilder richBuilder(HTTPRequestBuilder builder, Method method, Object[] args);
+    public HTTPRequestBuilder richBuilder(HTTPRequestBuilder builder, Method method, Object[] args){
+        return builder;
+    }
 }

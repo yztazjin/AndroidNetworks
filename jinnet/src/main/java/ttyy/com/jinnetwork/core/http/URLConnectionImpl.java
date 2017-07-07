@@ -220,6 +220,15 @@ public class URLConnectionImpl implements Client {
         return rsp;
     }
 
+    @Override
+    public HTTPResponse special(HTTPRequest request) {
+        // 默认提供的URLConnectionHttpClient 不支持 用户自定义操作
+        $HttpResponse err = new $HttpResponse(request);
+        err.setStatusCode(-1);
+        err.setErrorMessage("默认提供的URLConnectionHttpClient不支持用户自定义HTTP请求方式");
+        return err;
+    }
+
     private HttpURLConnection initConn(HttpURLConnection conn, HTTPRequest worker) throws IOException {
         // 连接超时设置
         conn.setConnectTimeout((int) mConnectTimeOut);
