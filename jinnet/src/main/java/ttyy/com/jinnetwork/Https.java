@@ -83,6 +83,11 @@ public class Https {
      * @return
      */
     public static <T> T createService(Class<? extends BaseAPIRequestProxy> proxyClass, Class<T> clazz) {
+
+        if(proxyClass == null){
+            throw new UnsupportedOperationException("Must support an Class that extends BaseAPIRequestProxy!");
+        }
+
         BaseAPIRequestProxy proxy = null;
         try {
             proxy = proxyClass.newInstance();
@@ -90,6 +95,10 @@ public class Https {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        }
+
+        if(proxy == null){
+            throw new IllegalStateException(proxyClass.getName()+" should has empty params constructor!");
         }
 
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, proxy);
