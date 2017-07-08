@@ -188,23 +188,23 @@ public abstract class ViewTracker implements HTTPCallback {
     /**
      * response状态码判断
      * -1 出现了异常
-     * 100 图片加载 加载磁盘thumb缓存专用状态码
-     * 101 图片加载 加载内存缓存专用状态码
-     * 102 从磁盘文件中获取数据状态码
+     * 800 图片加载 加载磁盘thumb缓存专用状态码
+     * 801 图片加载 加载内存缓存专用状态码
+     * 802 从磁盘文件中获取数据状态码
      *
      * @param response
      * @return
      */
     public final boolean isRespFromRuntimCache(HTTPResponse response) {
-        return response.getStatusCode() == 101;
+        return response.getStatusCode() == 801;
     }
 
     public final boolean isRespFromDiskCache(HTTPResponse response) {
-        return response.getStatusCode() == 100;
+        return response.getStatusCode() == 800;
     }
 
     public final boolean isRespFromDiskSource(HTTPResponse response) {
-        return response.getStatusCode() == 102;
+        return response.getStatusCode() == 802;
     }
 
     /**
