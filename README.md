@@ -66,7 +66,7 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 ## Reflect
 运行时注解注入
 
-### 默认提供注解：
+* #### 默认提供注解：
 1. Callback ElementType.PARAMETER
 > 使用默认提供的注解注入转换工具，Callback注解类型必须为 HTTPCallback类型 
 2. Header ElementType.PARAMETER
@@ -80,7 +80,7 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 6.URLPath ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE
 > 取最近注解的为准 
 
-### 提供用户自定义注解丰富参数设置
+* #### 提供用户自定义注解丰富参数设置
 ```Java
 public class TestAPIProxy extends BaseAPIRequestProxy {
 
@@ -97,7 +97,7 @@ public class TestAPIProxy extends BaseAPIRequestProxy {
 }
 ```
 
-### 使用方式
+* #### 使用方式
 ```Java
  // 用户自定义Proxy添加自定义注解参数
  Https.createService(TestAPIProxy.class, TestAPI.class);
