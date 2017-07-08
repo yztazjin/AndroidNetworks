@@ -24,6 +24,11 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
      .build()
      .requestAsync();
 ```
+### SPECIAL
+#### SPECIAL 用户自定义HTTP 请求方式 
+* 1.SPECIAL 对应Client接口的special方法
+* 2.用户需要自定义实现Client接口 
+* 3.builder.setClient();设置用户自定义实现的Client对象 
 
 ### 参数支持
 * 通用参数
@@ -37,8 +42,9 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 > ...  
 * GET 定制参数 
 > setDownloadMode(File file) 设置为下载文件的本地存储文件  
-* POST
-> addParam(String key, File file) 设置表单上传文件  
+* POST 定制参数
+> addParam(String key, File file) 设置表单上传文件  
+
 ## Images 
 图片加载
 ```Java
