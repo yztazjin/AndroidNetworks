@@ -3,16 +3,16 @@ Network Tools By HttpClient Or HttpURLConnection Or OKHttpClient
 
 # Https 
 GET/POST/SPECIAL请求
-* ### GET
-** #### HTTP GET
+### GET
+#### HTTP GET
 ```java
 Https.get(url)
      .addPathParam("page", currIndex+"")
      .build()
      .requestAsync();//进入请求队列
 ```
-* ### POST
-* #### HTTP POST
+### POST
+#### HTTP POST
 ```Java
 Https.post(url)// 默认使用Content-Type "application/json"
      .build()
@@ -26,8 +26,8 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
      .build()
      .requestAsync();
 ```
-* ### SPECIAL
-* #### SPECIAL 自定义HTTP 请求方式 
+### SPECIAL
+#### SPECIAL 自定义HTTP 请求方式 
 1. SPECIAL 对应Client接口的special方法
 2. 需要自定义实现Client接口
 3. builder.setRequestClient(client);设置自定义实现的Client对象 
