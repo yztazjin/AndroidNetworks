@@ -127,7 +127,7 @@ public class $AnnoConverter {
                     } else {
 
                         String key = mPathParam.value();
-                        builder.addHeader(key, args[i].toString());
+                        builder.addPathParam(key, args[i].toString());
                     }
                 }
             }
