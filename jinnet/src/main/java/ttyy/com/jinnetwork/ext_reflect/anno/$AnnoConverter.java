@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 
 import ttyy.com.jinnetwork.Https;
 import ttyy.com.jinnetwork.core.callback.HTTPCallback;
-import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPMethod;
 import ttyy.com.jinnetwork.core.work.HTTPRequestBuilder;
 import ttyy.com.jinnetwork.core.work.method_get.HTTPRequestGetBuilder;
@@ -109,7 +108,7 @@ public class $AnnoConverter {
                     }
                     break;
                 } else if (ano.annotationType().equals(URLPath.class)) {
-                    // URL PathParam
+                    // URL
                     if (args[i] != null) {
                         builder.setRequestURL(String.valueOf(args[i]));
                     }
@@ -117,7 +116,7 @@ public class $AnnoConverter {
                     break;
                 } else if (ano.annotationType().equals(PathParam.class)) {
                     // URL PathParam Params
-                    PathParam mPathParam = method.getDeclaringClass().getAnnotation(PathParam.class);
+                    PathParam mPathParam = (PathParam) ano;
 
                     if (args[i] == null
                             || mPathParam.value() == null
