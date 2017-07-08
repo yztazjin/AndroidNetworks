@@ -30,7 +30,7 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 #### SPECIAL 自定义HTTP 请求方式 
 1. SPECIAL 对应Client接口的special方法
 2. 需要自定义实现Client接口
-3. builder.setClient(client);设置自定义实现的Client对象 
+3. builder.setRequestClient(client);设置自定义实现的Client对象 
 
 ### 参数支持
 * 通用参数
@@ -67,19 +67,43 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 运行时注解注入
 
 ### 默认提供注解：
-* 1 Callback ElementType.PARAMETER
+1. Callback ElementType.PARAMETER
 > 使用默认提供的注解注入转换工具，Callback注解类型必须为 HTTPCallback类型 
-* 2 Header ElementType.PARAMETER
+2. Header ElementType.PARAMETER
 > Http请求Header 
-* 3 MethodType ElementType.METHOD
+3. MethodType ElementType.METHOD
 > Http请求Method GET/POST/SPECIAL 
-* 4 Param ElementType.PARAMETER
+4.Param ElementType.PARAMETER
 > Http请求参数 
-* 5 PathParam ElementType.PARAMETER
+5.PathParam ElementType.PARAMETER
 > Http请求路径匹配参数 xxx/{key}/xxx <=> @param(key) 
-* 6 URLPath ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE
-> 取最近注解的为准
+6.URLPath ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE
+> 取最近注解的为准 
 
+### 提供用户自定义注解丰富参数设置
+```Java
+public class TestAPIProxy extends BaseAPIRequestProxy {
+
+    @Override
+    public HTTPRequestBuilder richBuilder(HTTPRequestBuilder builder, Method method, Object[] args) {
+        /**
+         * 此处builder不为空
+         * 此处builder已经解析完成默认提供的注解
+         */
+        builder.setRequestClient(TestHttpClient.INSTANCE);
+
+        return builder;
+    }
+}
+```
+
+### 使用方式
+```Java
+ // 用户自定义Proxy添加自定义注解参数
+ Https.createService(TestAPIProxy.class, TestAPI.class);
+ // 使用默认提供的Proxy
+ Https.createService(TestAPI.class);
+```
 
 ## Response StatusCode
 * -1  出现异常
