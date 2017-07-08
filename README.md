@@ -73,11 +73,11 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 > Http请求Header 
 3. MethodType ElementType.METHOD
 > Http请求Method GET/POST/SPECIAL 
-4.Param ElementType.PARAMETER
+4. Param ElementType.PARAMETER
 > Http请求参数 
-5.PathParam ElementType.PARAMETER
+5. PathParam ElementType.PARAMETER
 > Http请求路径匹配参数 xxx/{key}/xxx <=> @param(key) 
-6.URLPath ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE 
+6. URLPath ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE 
 > 取最近注解的为准 
 
 * #### 提供用户自定义注解丰富参数设置
