@@ -224,20 +224,29 @@ public class HTTPRequest {
             callback.onPreStart(this);
         }
 
-        rsp.setStatusCode(102);// 从磁盘文件中读取数据状态码
-        rsp.setContentLength(builder.getResponseStreamFile().length());
-
-        if(getDownloadFile() != null
-                && getDownloadFile().equals(builder.getResponseStreamFile())){
-            // 对同一个文件 不支持同时读写
-            try {
-                is.close();
-            } catch (IOException e) {
-
-            }
+        if(is == null){
+            // InputStream Not Exists
+            rsp.setStatusCode(-1);// 出错
+            rsp.setErrorMessage("InputStream is null, maybe source file not exists");
         }else {
-            rsp.readContentFromStream(is);
+            // InputStream Exists
+            // 从磁盘文件中读取数据状态码
+            rsp.setStatusCode(102);
+            rsp.setContentLength(builder.getResponseStreamFile().length());
+
+            if(getDownloadFile() != null
+                    && getDownloadFile().equals(builder.getResponseStreamFile())){
+                // 对同一个文件 不支持同时读写 也没必要进行这样的IO操作
+                try {
+                    is.close();
+                } catch (IOException e) {
+
+                }
+            }else {
+                rsp.readContentFromStream(is);
+            }
         }
+
         if (rsp != null) {
             if (callback != null) {
                 if (rsp.isStatusCodeSuccessful()) {
