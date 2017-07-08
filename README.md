@@ -4,6 +4,7 @@ Network Tools By HttpClient Or HttpURLConnection Or OKHttpClient
 # Https 
 GET/POST请求
 ### GET
+#### HTTP GET
 ```java
 Https.get(url)
      .addPathParam("page", currIndex+"")
@@ -11,6 +12,7 @@ Https.get(url)
      .requestAsync();//进入请求队列
 ```
 ### POST
+#### HTTP POST
 ```Java
 Https.post(url)// 默认使用Content-Type "application/json"
      .build()
@@ -25,10 +27,10 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
      .requestAsync();
 ```
 ### SPECIAL
-#### SPECIAL 用户自定义HTTP 请求方式 
-* 1.SPECIAL 对应Client接口的special方法
-* 2.用户需要自定义实现Client接口 
-* 3.builder.setClient();设置用户自定义实现的Client对象 
+#### SPECIAL 自定义HTTP 请求方式 
+* 1. SPECIAL 对应Client接口的special方法
+* 2. 需要自定义实现Client接口
+* 3. builder.setClient(client);设置自定义实现的Client对象 
 
 ### 参数支持
 * 通用参数
@@ -60,6 +62,24 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 * File file Images.get().source(file)
 * File String url = "file://"+file.getAbsoultPath() Images.get().source(url)
 * Network Images.get().source(url)
+
+## Reflect
+运行时注解注入
+
+### 默认提供注解：
+* 1 Callback ElementType.PARAMETER
+> 使用默认提供的注解注入转换工具，Callback注解类型必须为 HTTPCallback类型 
+* 2 Header ElementType.PARAMETER
+> Http请求Header 
+* 3 MethodType ElementType.METHOD
+> Http请求Method GET/POST/SPECIAL 
+* 4 Param ElementType.PARAMETER
+> Http请求参数 
+* 5 PathParam ElementType.PARAMETER
+> Http请求路径匹配参数 xxx/{key}/xxx <=> @param(key) 
+* 6 URLPath ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE
+> 取最近注解的为准
+
 
 ## Response StatusCode
 * -1  出现异常
