@@ -32,8 +32,8 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 2. 需要自定义实现Client接口
 3. builder.setRequestClient(client);设置自定义实现的Client对象 
 
-* ### 参数支持
-* #### 通用参数
+### 参数支持
+#### 通用参数
 > addParam(String key, Object value)  
 > removeParam(String key)  
 > addHeader(String key, String value)  
