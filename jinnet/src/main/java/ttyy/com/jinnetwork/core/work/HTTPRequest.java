@@ -231,7 +231,7 @@ public class HTTPRequest {
         }else {
             // InputStream Exists
             // 从磁盘文件中读取数据状态码
-            rsp.setStatusCode(102);
+            rsp.setStatusCode(802);
             rsp.setContentLength(builder.getResponseStreamFile().length());
 
             if(getDownloadFile() != null
