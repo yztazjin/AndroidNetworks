@@ -129,7 +129,7 @@ public class HTTPImageRequest extends HTTPRequest {
             ImageCache.getInstance().setIntoRuntimeCache(uri, bm);
 
             $HttpResponse rsp = new $HttpResponse(this);
-            rsp.setStatusCode(101);//101 内存缓存加载状态码
+            rsp.setStatusCode(801);//801 内存缓存加载状态码
             rsp.setContentLength(bm.getRowBytes() * bm.getHeight());
 
             getHttpCallback().onProgress(rsp, rsp.getContentLength(), rsp.getContentLength());
@@ -159,7 +159,7 @@ public class HTTPImageRequest extends HTTPRequest {
             mImageBuilder.setResponseFile(sourceFile);
             mImageBuilder.setDownloadMode(sourceFile);
             $HttpResponse rsp = new $HttpResponse(this);
-            rsp.setStatusCode(100);// 100磁盘thumb缓存专用状态码
+            rsp.setStatusCode(800);// 800磁盘thumb缓存专用状态码
             rsp.setContentLength(mImageBuilder.getResponseStreamFile().length());
 
             getHttpCallback().onProgress(rsp, rsp.getContentLength(), rsp.getContentLength());
