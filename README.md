@@ -71,13 +71,13 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 > 使用默认提供的注解注入转换工具，Callback注解类型必须为 HTTPCallback类型 
 2. Header ElementType.PARAMETER
 > Http请求Header 
-3. MethodType ElementType.METHOD
-> Http请求Method GET/POST/SPECIAL 
-4.Param ElementType.PARAMETER
-> Http请求参数 
-5.PathParam ElementType.PARAMETER
-> Http请求路径匹配参数 xxx/{key}/xxx <=> @param(key) 
-6.URLPath ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE
+3. MethodType ElementType.METHOD 
+> Http请求Method GET/POST/SPECIAL  
+4.Param ElementType.PARAMETER 
+> Http请求参数  
+5.PathParam ElementType.PARAMETER 
+> Http请求路径匹配参数 xxx/{key}/xxx <=> @param(key)  
+6.URLPath ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE 
 > 取最近注解的为准 
 
 * #### 提供用户自定义注解丰富参数设置
