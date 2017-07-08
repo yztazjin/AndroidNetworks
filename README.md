@@ -28,9 +28,9 @@ Https.post(url, PostContentType.MultipartFormadata)// 指定Content-Type "multip
 ```
 ### SPECIAL
 #### SPECIAL 自定义HTTP 请求方式 
-* 1. SPECIAL 对应Client接口的special方法
-* 2. 需要自定义实现Client接口
-* 3. builder.setClient(client);设置自定义实现的Client对象 
+1. SPECIAL 对应Client接口的special方法
+2. 需要自定义实现Client接口
+3. builder.setClient(client);设置自定义实现的Client对象 
 
 ### 参数支持
 * 通用参数
