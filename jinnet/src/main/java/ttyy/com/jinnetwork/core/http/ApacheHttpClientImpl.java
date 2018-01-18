@@ -71,7 +71,7 @@ public class ApacheHttpClientImpl implements Client {
     HttpClient mHttpClient;
 
     private ApacheHttpClientImpl(HTTPConfig config) {
-        if(config.isIgnoreCertificate()){
+        if (config.isIgnoreCertificate()) {
             try {
                 KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
                 trustStore.load(null, null);
@@ -95,13 +95,13 @@ public class ApacheHttpClientImpl implements Client {
             } catch (Exception e) {
                 mHttpClient = new DefaultHttpClient();
             }
-        }else {
+        } else {
             mHttpClient = HttpClients.createDefault();
         }
 
         mHttpClient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-        mHttpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,(int)config.getConnectTimeOut());//连接时间
-        mHttpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT,(int)config.getReadTimeOut());//数据传输时间
+        mHttpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, (int) config.getConnectTimeOut());//连接时间
+        mHttpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, (int) config.getReadTimeOut());//数据传输时间
     }
 
     static class Holder {
@@ -224,7 +224,11 @@ public class ApacheHttpClientImpl implements Client {
                 response.readContentFromStream(entity.getContent());
             }
             // 断开连接
-            apache_resp.getEntity().getContent().close();
+            try {
+                apache_resp.getEntity().getContent().close();
+            } catch (IllegalStateException e) {
+
+            }
         } catch (IOException e) {
             response.setException(e);
             response.setStatusCode(-1);
@@ -255,7 +259,7 @@ public class ApacheHttpClientImpl implements Client {
                 }
             };
 
-            sslContext.init(null, new TrustManager[] { tm }, null);
+            sslContext.init(null, new TrustManager[]{tm}, null);
         }
 
         @Override
