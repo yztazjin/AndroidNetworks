@@ -116,7 +116,7 @@ public class $HttpResponse implements HTTPResponse {
     }
 
     @Override
-    public String getConentToString() {
+    public String getContentToString() {
         if(mContentStr == null){
             if(mContentBytes == null
                     || mContentBytes.length == 0){

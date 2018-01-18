@@ -27,38 +27,27 @@ public final class $Converter {
 
     /**
      * 转换为Json参数
+     *
      * @param request
      * @return
      */
-    public static JSONObject toJson(HTTPRequest request) {
-        Map<String, Object> params = request.getParams();
-        JSONObject jsonObject = new JSONObject();
-
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            try {
-                jsonObject.put(key, value);
-            } catch (JSONException e) {
-                __Log.i("Converter", "JSONError key "+key);
-                e.printStackTrace();
-            }
-        }
-
-        return jsonObject;
+    public static String toJson(HTTPRequest request) {
+        Object object = SimpleJsonConverter.convert(request.getParams());
+        return object == null ? null : object.toString();
     }
 
     /**
      * 转化为Get URL拼接参数 / Post application/x-www-form-urlencoded形式的参数
+     *
      * @param request
      * @return
      */
-    public static String toFormParams(HTTPRequest request){
+    public static String toFormParams(HTTPRequest request) {
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String, Object> entry : request.getParams().entrySet()){
+        for (Map.Entry<String, Object> entry : request.getParams().entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            if(value != null){
+            if (value != null) {
                 sb.append(key)
                         .append("=")
                         .append(URLEncoder.encode(value.toString()))
@@ -71,23 +60,25 @@ public final class $Converter {
 
     /**
      * multi-part形式的参数
+     *
      * @param request
      * @return
      */
-    public static byte[] toMultipartFormParams(HTTPRequest request){
+    public static byte[] toMultipartFormParams(HTTPRequest request) {
 
         return null;
     }
 
     private static Pattern UrlPattern = Pattern.compile("([\u4e00-\u9fa5]+)");
+
     // 资源地址转码 针对中文
-    public static String EncodeURL(String url){
+    public static String EncodeURL(String url) {
         String realUrl = url;
         Matcher m = UrlPattern.matcher(url);
-        while (m.find()){
+        while (m.find()) {
             String target = m.group();
             String encodeTarget = URLEncoder.encode(target);
-            realUrl = realUrl.replaceAll(target,encodeTarget);
+            realUrl = realUrl.replaceAll(target, encodeTarget);
         }
         return realUrl;
     }

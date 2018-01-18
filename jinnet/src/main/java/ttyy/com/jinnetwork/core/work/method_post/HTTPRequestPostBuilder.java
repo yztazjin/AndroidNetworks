@@ -59,13 +59,13 @@ public class HTTPRequestPostBuilder extends HTTPRequestBuilder {
     }
 
     @Override
-    public HTTPRequestPostBuilder removeHeader(String key){
-        return (HTTPRequestPostBuilder)super.removeHeader(key);
+    public HTTPRequestPostBuilder delHeader(String key){
+        return (HTTPRequestPostBuilder)super.delHeader(key);
     }
 
     @Override
-    public HTTPRequestPostBuilder removeParam(String key){
-        return (HTTPRequestPostBuilder)super.removeParam(key);
+    public HTTPRequestPostBuilder delParam(String key){
+        return (HTTPRequestPostBuilder)super.delParam(key);
     }
 
     @Override

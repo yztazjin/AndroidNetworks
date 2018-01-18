@@ -42,12 +42,12 @@ public class HTTPRequest {
 
     public Map<String, Object> getParams() {
 
-        return builder.getParasmDict();
+        return builder.getParamsDict();
     }
 
     public <T> T getParam(String key){
 
-        return (T) builder.getParasmDict().get(key);
+        return (T) builder.getParamsDict().get(key);
     }
 
     public String getHeader(String key){

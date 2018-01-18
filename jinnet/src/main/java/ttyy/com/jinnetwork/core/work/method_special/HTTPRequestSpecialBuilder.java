@@ -34,13 +34,13 @@ public class HTTPRequestSpecialBuilder extends HTTPRequestBuilder{
     }
 
     @Override
-    public HTTPRequestSpecialBuilder removeHeader(String key){
-        return (HTTPRequestSpecialBuilder) super.removeHeader(key);
+    public HTTPRequestSpecialBuilder delHeader(String key){
+        return (HTTPRequestSpecialBuilder) super.delHeader(key);
     }
 
     @Override
-    public HTTPRequestSpecialBuilder removeParam(String key){
-        return (HTTPRequestSpecialBuilder) super.removeParam(key);
+    public HTTPRequestSpecialBuilder delParam(String key){
+        return (HTTPRequestSpecialBuilder) super.delParam(key);
     }
 
     @Override

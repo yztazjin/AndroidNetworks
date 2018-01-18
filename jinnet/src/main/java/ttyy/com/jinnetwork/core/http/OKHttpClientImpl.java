@@ -79,7 +79,7 @@ public class OKHttpClientImpl implements Client {
     }
 
     static class Holder {
-        static OKHttpClientImpl INSTANCE = new OKHttpClientImpl(HTTPConfig.get());
+        static OKHttpClientImpl INSTANCE = new OKHttpClientImpl(HTTPConfig.getInstance());
     }
 
     public static OKHttpClientImpl getInstance() {
@@ -101,7 +101,7 @@ public class OKHttpClientImpl implements Client {
         PostContentType mContentType = worker.getContentType();
         if(mContentType == PostContentType.ApplicationJson){
 
-            String jsonText = $Converter.toJson(worker).toString();
+            String jsonText = $Converter.toJson(worker);
             RequestBody requestBody = RequestBody.create(MediaType.parse(mContentType.value()), jsonText);
             requestBuilder.post(requestBody);
         }else if(mContentType == PostContentType.FormURLEncoded){

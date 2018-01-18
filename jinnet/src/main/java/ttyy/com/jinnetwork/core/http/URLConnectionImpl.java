@@ -79,7 +79,7 @@ public class URLConnectionImpl implements Client {
     }
 
     static class Holder{
-        static URLConnectionImpl INSTANCE = new URLConnectionImpl(HTTPConfig.get());
+        static URLConnectionImpl INSTANCE = new URLConnectionImpl(HTTPConfig.getInstance());
     }
 
     public static URLConnectionImpl getInstance(){
@@ -112,7 +112,7 @@ public class URLConnectionImpl implements Client {
             // 表单填写借助HttpClient Entity
             if(mContentType == PostContentType.ApplicationJson){
 
-                String jsonText = $Converter.toJson(worker).toString();
+                String jsonText = $Converter.toJson(worker);
                 RequestStringEntity requestEntity = new RequestStringEntity(jsonText, "utf-8");
 
                 requestEntity.writeTo(os);

@@ -105,7 +105,7 @@ public class ApacheHttpClientImpl implements Client {
     }
 
     static class Holder {
-        static ApacheHttpClientImpl INSTANCE = new ApacheHttpClientImpl(HTTPConfig.get());
+        static ApacheHttpClientImpl INSTANCE = new ApacheHttpClientImpl(HTTPConfig.getInstance());
     }
 
     public static ApacheHttpClientImpl getInstance() {
@@ -124,7 +124,7 @@ public class ApacheHttpClientImpl implements Client {
             PostContentType mContentType = worker.getContentType();
             if (mContentType == PostContentType.ApplicationJson) {
 
-                String jsonText = $Converter.toJson(worker).toString();
+                String jsonText = $Converter.toJson(worker);
 
                 StringEntity requestEntity = new StringEntity(jsonText, "utf-8");
                 post.setEntity(requestEntity);

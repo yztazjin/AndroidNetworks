@@ -24,6 +24,14 @@ public class Https {
     }
 
     /**
+     * 配置
+     * @return
+     */
+    public static HTTPConfig config() {
+        return HTTPConfig.getInstance();
+    }
+
+    /**
      * Get请求
      *
      * @param url
@@ -43,7 +51,7 @@ public class Https {
      */
     public static HTTPRequestPostBuilder post(String url, PostContentType type) {
         if (type == null) {
-            type = HTTPConfig.get().getPostContentType();
+            type = HTTPConfig.getInstance().getPostContentType();
         }
 
         return new HTTPRequestPostBuilder(type).setRequestURL(url);
@@ -57,7 +65,7 @@ public class Https {
      */
     public static HTTPRequestPostBuilder post(String url) {
 
-        return post(url, HTTPConfig.get().getPostContentType());
+        return post(url, HTTPConfig.getInstance().getPostContentType());
     }
 
     /**
@@ -84,7 +92,7 @@ public class Https {
      */
     public static <T> T createService(Class<? extends BaseAPIRequestProxy> proxyClass, Class<T> clazz) {
 
-        if(proxyClass == null){
+        if (proxyClass == null) {
             throw new UnsupportedOperationException("Must support an Class that extends BaseAPIRequestProxy!");
         }
 
@@ -97,8 +105,8 @@ public class Https {
             e.printStackTrace();
         }
 
-        if(proxy == null){
-            throw new IllegalStateException(proxyClass.getName()+" should has empty params constructor!");
+        if (proxy == null) {
+            throw new IllegalStateException(proxyClass.getName() + " should has empty params constructor!");
         }
 
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, proxy);

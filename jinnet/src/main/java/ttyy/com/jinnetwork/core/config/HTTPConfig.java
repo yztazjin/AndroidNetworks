@@ -65,7 +65,7 @@ public class HTTPConfig {
         mClientType = ClientType.OKHTTP_CLIENT;
     }
 
-    public static HTTPConfig get(){
+    public static HTTPConfig getInstance(){
         return Holder.INSTANCE;
     }
 

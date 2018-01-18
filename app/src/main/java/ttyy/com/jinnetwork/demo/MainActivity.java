@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 import ttyy.com.jinnetwork.Https;
 import ttyy.com.jinnetwork.Images;
-import ttyy.com.jinnetwork.core.callback.HTTPCallback;
 import ttyy.com.jinnetwork.core.callback.HTTPUIThreadCallbackAdapter;
 import ttyy.com.jinnetwork.core.work.HTTPRequest;
 import ttyy.com.jinnetwork.core.work.HTTPResponse;
@@ -59,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
 //                .test(12, "params", new HTTPCallback() {
 //                    @Override
 //                    public void onPreStart(HTTPRequest request) {
-//                        Log.e("Test", "onPreStart param0 -> "+request.getParams().get("param0"));
-//                        Log.e("Test", "onPreStart param1 -> "+request.getParams().get("param1"));
+//                        Log.e("Test", "onPreStart param0 -> "+request.getParams().getInstance("param0"));
+//                        Log.e("Test", "onPreStart param1 -> "+request.getParams().getInstance("param1"));
 //                    }
 //
 //                    @Override
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(HTTPResponse response) {
                             super.onSuccess(response);
-                            GankIOBean bean = gson.fromJson(response.getConentToString(), GankIOBean.class);
+                            GankIOBean bean = gson.fromJson(response.getContentToString(), GankIOBean.class);
                             if(!bean.error){
                                 currIndex++;
                                 datas.addAll(bean.results);

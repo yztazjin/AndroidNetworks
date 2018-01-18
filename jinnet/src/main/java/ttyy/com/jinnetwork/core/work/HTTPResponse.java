@@ -55,7 +55,7 @@ public interface HTTPResponse {
      * 响应内容String
      * @return
      */
-    String getConentToString();
+    String getContentToString();
 
     /**
      * 错误信息

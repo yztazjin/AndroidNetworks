@@ -161,7 +161,7 @@ public class $AnnoConverter {
 
             switch (method){
                 case GET:
-                    // get 没有对JSONObject的操作
+                    // getInstance 没有对JSONObject的操作
 
                     break;
                 case POST:

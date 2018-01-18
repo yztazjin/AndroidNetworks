@@ -55,7 +55,7 @@ public class HTTPRequestBuilder {
     protected File mResponseStreamFile;
 
     protected HTTPRequestBuilder() {
-        mClientType = HTTPConfig.get().getClientType();
+        mClientType = HTTPConfig.getInstance().getClientType();
         isEnableRemoveSameRequest = true;
     }
 
@@ -69,12 +69,12 @@ public class HTTPRequestBuilder {
         return this;
     }
 
-    public HTTPRequestBuilder removeHeader(String key) {
+    public HTTPRequestBuilder delHeader(String key) {
         headers.remove(key);
         return this;
     }
 
-    public HTTPRequestBuilder removeParam(String key) {
+    public HTTPRequestBuilder delParam(String key) {
         params.remove(key);
         return this;
     }
@@ -88,7 +88,7 @@ public class HTTPRequestBuilder {
         return headers;
     }
 
-    public Map<String, Object> getParasmDict() {
+    public Map<String, Object> getParamsDict() {
         return params;
     }
 

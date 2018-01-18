@@ -39,13 +39,13 @@ public class HTTPRequestGetBuilder extends HTTPRequestBuilder {
     }
 
     @Override
-    public HTTPRequestGetBuilder removeHeader(String key){
-        return (HTTPRequestGetBuilder)super.removeHeader(key);
+    public HTTPRequestGetBuilder delHeader(String key){
+        return (HTTPRequestGetBuilder)super.delHeader(key);
     }
 
     @Override
-    public HTTPRequestGetBuilder removeParam(String key){
-        return (HTTPRequestGetBuilder)super.removeParam(key);
+    public HTTPRequestGetBuilder delParam(String key){
+        return (HTTPRequestGetBuilder)super.delParam(key);
     }
 
     @Override

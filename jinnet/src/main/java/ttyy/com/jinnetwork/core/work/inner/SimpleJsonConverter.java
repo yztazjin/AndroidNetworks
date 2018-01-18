@@ -22,11 +22,19 @@ class SimpleJsonConverter {
 
     static Object convert(Object value) {
 
-        if (isList(value)) {
+        if (value == null) {
+
+            return null;
+        } else if (isList(value)) {
             JSONArray array = new JSONArray();
             Iterable iterable = (Iterable) value;
             for (Object tmp : iterable) {
-                array.put(convert(tmp));
+
+                Object convertedValue = convert(tmp);
+                if (convertedValue != null) {
+                    array.put(convert(tmp));
+                }
+
             }
 
             return array;
@@ -36,9 +44,14 @@ class SimpleJsonConverter {
             Map<String, Object> map = (Map<String, Object>) value;
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 try {
-                    json.put(entry.getKey(), convert(entry.getValue()));
+
+                    Object convertedValue = convert(entry.getValue());
+                    if (convertedValue != null) {
+                        json.put(entry.getKey(), convertedValue);
+                    }
+
                 } catch (JSONException e) {
-                    e.printStackTrace();
+
                 }
             }
 
@@ -90,9 +103,12 @@ class SimpleJsonConverter {
             field.setAccessible(true);
 
             try {
-                map.put(field.getName(), field.get(src));
+                Object value = field.get(src);
+                if (value != null) {
+                    map.put(field.getName(), field.get(src));
+                }
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+
             }
 
         }
