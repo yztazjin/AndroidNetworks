@@ -1,15 +1,17 @@
 package ttyy.com.jinnetwork.demo;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import java.util.ArrayList;
+import com.small.tools.network.internal.cache.CacheAction;
+import com.small.tools.network.support.Images;
+import com.small.tools.network.support.images.ImagesActionImageView;
 
-import ttyy.com.jinnetwork.Images;
-import ttyy.com.jinnetwork.ext_image.cache.ImageCacheType;
+import java.util.ArrayList;
 
 /**
  * Author: hjq
@@ -24,7 +26,7 @@ public class GankIOAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return datas == null ? 0:datas.size();
+        return datas == null ? 0 : datas.size();
     }
 
     @Override
@@ -40,18 +42,17 @@ public class GankIOAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        if(view == null){
+        if (view == null) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_image, null);
         }
 
         ImageView iv = (ImageView) view.findViewById(R.id.iv_image);
         GankIOBean.Data data = datas.get(i);
-        Images.get().source(data.url)
-                .useCache(ImageCacheType.AllCache)
-                .placeholder(R.drawable.shape_pre)
-                .anim(android.R.anim.fade_in)
-                .error(R.drawable.shape_err)
-                .into(iv);
+        Log.d("Https", "i " + i + " " + iv + " " + data.url);
+        Images.get().loadFromNetwork(data.url)
+                .placeholder(view.getContext().getResources().getDrawable(R.drawable.shape_pre))
+                .fail(view.getContext().getResources().getDrawable(R.drawable.shape_err))
+                .into(new ImagesActionImageView(iv));
 
         return view;
     }

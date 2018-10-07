@@ -1,1 +1,1 @@
-include ':app', ':jinnet'
+include ':app', ':lib'

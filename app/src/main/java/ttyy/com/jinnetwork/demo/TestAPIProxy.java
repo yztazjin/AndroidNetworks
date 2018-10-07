@@ -4,9 +4,6 @@ import android.util.Log;
 
 import java.lang.reflect.Method;
 
-import ttyy.com.jinnetwork.core.work.HTTPRequestBuilder;
-import ttyy.com.jinnetwork.ext_reflect.BaseAPIRequestProxy;
-
 /**
  * Author: hjq
  * Date  : 2017/07/07 22:07
@@ -14,14 +11,14 @@ import ttyy.com.jinnetwork.ext_reflect.BaseAPIRequestProxy;
  * Intro : Edit By hjq
  * Version : 1.0
  */
-public class TestAPIProxy extends BaseAPIRequestProxy {
+public class TestAPIProxy {
 
-    @Override
-    public HTTPRequestBuilder richBuilder(HTTPRequestBuilder builder, Method method, Object[] args) {
-
-        Log.e("Test", "TestAPIProxy rich builder");
-        builder.setRequestClient(TestHttpClient.INSTANCE);
-
-        return builder;
-    }
+//    @Override
+//    public HTTPRequestBuilder richBuilder(HTTPRequestBuilder builder, Method method, Object[] args) {
+//
+//        Log.e("Test", "TestAPIProxy rich builder");
+//        builder.setRequestClient(TestHttpClient.INSTANCE);
+//
+//        return builder;
+//    }
 }
