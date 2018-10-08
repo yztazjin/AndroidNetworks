@@ -39,7 +39,7 @@ public class SmallImagesRequest extends SmallHTTPRequest implements SmallImages 
 
     public SmallImagesRequest() {
         super();
-        setResourceDataParser(new ResourceParserBitmap());
+        setResourceDataParser(Configs.getSingleton().images().getDataParser());
         setHTTPMethod(HTTPMethod.GET);
         setCacheManager(Configs.getSingleton().images().getCacheManager());
         setCacheAction(Configs.getSingleton().images().getCacheAction());
@@ -76,7 +76,7 @@ public class SmallImagesRequest extends SmallHTTPRequest implements SmallImages 
                 getAction().onFinish(SmallImagesRequest.this);
             }
         };
-        setHTTPCallback(callback);
+        setHTTPCallback(UICallbackWrapper.wrap(callback));
     }
 
     @Override
@@ -191,7 +191,8 @@ public class SmallImagesRequest extends SmallHTTPRequest implements SmallImages 
 
     @Override
     public SmallImagesRequest setResourceDataParser(ResourceDataParser data) {
-        if (data == null) {
+        if (data == null
+                || data.getParseType() == null) {
             throw new NullPointerException("ResourceDataParser shouldn't be null!");
         }
 

@@ -11,6 +11,7 @@ import com.small.tools.network.internal.interfaces.HTTPRequest;
  * Version : 1.0
  */
 public class HTTPCallbackAdapter implements HTTPCallback {
+
     @Override
     public void onStart(HTTPRequest request) {
 

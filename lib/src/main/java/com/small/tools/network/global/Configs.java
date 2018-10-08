@@ -1,11 +1,13 @@
 package com.small.tools.network.global;
 
+import com.small.tools.network.internal.ResourceParserString;
 import com.small.tools.network.internal.async.Scheduler;
 import com.small.tools.network.internal.async.SchedulerFIFO;
 import com.small.tools.network.internal.cache.SmallCache;
 import com.small.tools.network.internal.cache.SmallCacheDefault;
 import com.small.tools.network.internal.interfaces.HTTPClient;
 import com.small.tools.network.internal.client.ClientOKHttpIml;
+import com.small.tools.network.internal.interfaces.ResourceDataParser;
 import com.small.tools.network.internal.interfaces.SmallConfig;
 import com.small.tools.network.support.images.ConfigImages;
 
@@ -25,6 +27,7 @@ public class Configs implements SmallConfig {
     HTTPClient mClient;
     SmallCache mCacheManager;
     Scheduler mScheduler;
+    ResourceDataParser mDataParser;
 
     volatile ConfigImages mConfigImages;
 
@@ -32,6 +35,7 @@ public class Configs implements SmallConfig {
         mClient = new ClientOKHttpIml();
         mCacheManager = new SmallCacheDefault();
         mScheduler = new SchedulerFIFO();
+        mDataParser = new ResourceParserString();
     }
 
     public static Configs getSingleton() {
@@ -70,6 +74,20 @@ public class Configs implements SmallConfig {
     @Override
     public Scheduler getScheduler() {
         return mScheduler;
+    }
+
+    @Override
+    public SmallConfig setDataParser(ResourceDataParser parser) {
+        if (parser == null) {
+            throw new NullPointerException("dataparser shouldn't set null");
+        }
+        mDataParser = parser;
+        return this;
+    }
+
+    @Override
+    public ResourceDataParser getDataParser() {
+        return mDataParser.newInstance();
     }
 
     @Override

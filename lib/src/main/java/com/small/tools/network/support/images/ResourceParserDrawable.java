@@ -55,7 +55,7 @@ class ResourceParserDrawable implements ResourceDataParser<Drawable> {
     }
 
     @Override
-    public ResourceParserDrawable copy() {
+    public ResourceParserDrawable newInstance() {
         return new ResourceParserDrawable();
     }
 }

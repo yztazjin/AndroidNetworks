@@ -100,7 +100,7 @@ public class ResourceParserBitmap implements ResourceDataParser<BitmapDrawable> 
     }
 
     @Override
-    public ResourceParserBitmap copy() {
+    public ResourceParserBitmap newInstance() {
         return new ResourceParserBitmap();
     }
 }

@@ -65,6 +65,7 @@ public class SmallHTTPRequest implements HTTPRequest {
         mHTTPClient = Configs.getSingleton().getHTTPClient();
         mCacheManager = Configs.getSingleton().getCacheManager();
         mCacheAction = CacheAction.None;
+        mDataParser = Configs.getSingleton().getDataParser();
     }
 
     @Override

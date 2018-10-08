@@ -76,7 +76,7 @@ public class ResourceParserString implements ResourceDataParser<String> {
     }
 
     @Override
-    public ResourceParserString copy() {
+    public ResourceParserString newInstance() {
         return new ResourceParserString();
     }
 }

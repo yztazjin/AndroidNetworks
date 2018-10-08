@@ -24,4 +24,8 @@ public interface SmallConfig {
 
     Scheduler getScheduler();
 
+    SmallConfig setDataParser(ResourceDataParser parser);
+
+    ResourceDataParser getDataParser();
+
 }

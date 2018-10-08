@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.small.tools.network.Https;
 import com.small.tools.network.global.Configs;
+import com.small.tools.network.internal.HTTPJsonCallback;
 import com.small.tools.network.internal.cache.CacheAction;
 import com.small.tools.network.internal.interfaces.HTTPCallback;
 import com.small.tools.network.internal.interfaces.HTTPRequest;
@@ -122,43 +123,15 @@ public class MainActivity extends AppCompatActivity {
             String url = "http://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/" + currIndex;
             Https.get(url)
                     .setResourceDataParser(new ResourceParserString())
-                    .setHTTPCallback(new HTTPCallback() {
+                    .setHTTPCallback(new HTTPJsonCallback<GankIOBean>(){
                         @Override
-                        public void onStart(HTTPRequest request) {
-                            Log.d("Https", "onStart " + request.getRemoteResource().getResourceAddress());
-
-                        }
-
-                        @Override
-                        public void onProgress(HTTPRequest request, long cur, long total) {
-
-                        }
-
-                        @Override
-                        public void onSuccess(HTTPRequest request) {
-                            Log.d("Https", "onSuccess " + request.getRemoteResource().getResourceAddress()
-                                    + "\n" + request.getResourceDataParser().getData());
-                            GankIOBean bean = gson.fromJson((String) request.getResourceDataParser().getData(), GankIOBean.class);
-                            if (!bean.error) {
+                        public void onSuccess(HTTPRequest request, GankIOBean data) {
+                            super.onSuccess(request, data);
+                            if (!data.error) {
                                 currIndex++;
-                                datas.addAll(bean.results);
+                                datas.addAll(data.results);
                             }
                             requestGankIODatas();
-                        }
-
-                        @Override
-                        public void onFailure(HTTPRequest request) {
-
-                        }
-
-                        @Override
-                        public void onCancel(HTTPRequest request, boolean isUserCanceled) {
-
-                        }
-
-                        @Override
-                        public void onFinish(HTTPRequest request) {
-                            Log.d("Https", "onFinish " + request.getRemoteResource().getResourceAddress());
                         }
                     })
                     .requestAsync();

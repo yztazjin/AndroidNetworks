@@ -19,6 +19,6 @@ public interface ResourceDataParser<T> {
 
     Class<T> getParseType();
 
-    ResourceDataParser<T> copy();
+    ResourceDataParser<T> newInstance();
 
 }

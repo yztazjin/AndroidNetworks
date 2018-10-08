@@ -125,7 +125,7 @@ public class ResourceParserFile implements ResourceDataParser<File> {
     }
 
     @Override
-    public ResourceParserFile copy() {
+    public ResourceParserFile newInstance() {
         return new ResourceParserFile();
     }
 }
