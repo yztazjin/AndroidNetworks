@@ -11,9 +11,6 @@ import com.small.tools.network.internal.interfaces.HTTPRequest;
  */
 public class ThreadScheduler implements Scheduler {
 
-    Thread mThread;
-    HTTPRequest mRequest;
-
     @Override
     public final void setMaxRunningRequests(int number) {
 
@@ -25,46 +22,45 @@ public class ThreadScheduler implements Scheduler {
     }
 
     @Override
-    public final <T extends HTTPRequest> void submit(T request) {
-        this.mRequest = request;
-        mThread = new Thread(new Runnable() {
+    public final <T extends HTTPRequest> void submit(final T request) {
+        if (request == null
+                || request.isExecuted()
+                || request.isCanceled()
+                || request.isFinished()) {
+            return;
+        }
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                if (mRequest == null
-                        || mRequest.isExecuted()
-                        || mRequest.isCanceled()
-                        || mRequest.isFinished()) {
+                if (request == null
+                        || request.isExecuted()
+                        || request.isCanceled()
+                        || request.isFinished()) {
                     return;
                 }
-                mRequest.requestSync();
+                request.requestSync();
             }
-        });
-        mThread.start();
+        }).start();
     }
 
     @Override
     public final <T extends HTTPRequest> void cancel(T request) {
-        if (mRequest != null
-                && mRequest == request)
-            mRequest.cancel(true);
+        if (request != null
+                && !request.isCanceled()) {
+            request.cancel(true);
+        }
     }
 
     @Override
     public void cancelAll() {
-        if (mRequest != null)
-            mRequest.cancel(true);
+
     }
 
     @Override
     public final <T extends HTTPRequest> void finish(T request) {
-        if (mRequest == null) {
-            return;
+        if (request != null
+                && !request.isFinished()) {
+            request.finish();
         }
-
-        if (!mRequest.isFinished()) {
-            mRequest.finish();
-        }
-
-        this.mRequest = null;
     }
 }
