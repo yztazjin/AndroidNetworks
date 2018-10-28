@@ -58,7 +58,7 @@ public class SchedulerLIFO implements Scheduler {
             mRunningRequests.add(request);
             mExecutors.submit(new SchedulerCallable(request));
         } else {
-            mWaitingRequests.add(request);
+            mWaitingRequests.add(0, request);
         }
     }
 
@@ -86,8 +86,17 @@ public class SchedulerLIFO implements Scheduler {
 
         boolean result = mRunningRequests.remove(request);
         if (!result) {
-            mWaitingRequests.remove(request);
+            result = mWaitingRequests.remove(request);
+
+            if (result && !request.isFinished()) {
+                request.finish();
+            }
+
         } else {
+
+            if (!request.isFinished()) {
+                request.finish();
+            }
 
             if (mRunningRequests.size() < nMaxRunningRequests
                     && mWaitingRequests.size() > 0) {

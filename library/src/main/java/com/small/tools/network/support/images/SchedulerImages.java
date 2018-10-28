@@ -102,9 +102,17 @@ public class SchedulerImages implements Scheduler {
 
         boolean result = mRunningRequests.remove(request);
         if (!result) {
-            mWaitingRequests.remove(request);
+            result = mWaitingRequests.remove(request);
+
+            if (result && !request.isFinished()) {
+                request.finish();
+            }
 
         } else {
+
+            if (!request.isFinished()) {
+                request.finish();
+            }
 
             if (mRunningRequests.size() < nMaxRunningRequests
                     && mWaitingRequests.size() > 0) {

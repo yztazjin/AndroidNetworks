@@ -7,9 +7,9 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
 import com.small.tools.network.Https;
 import com.small.tools.network.global.Configs;
+import com.small.tools.network.internal.HTTPCallbackAdapter;
 import com.small.tools.network.internal.HTTPJsonCallback;
 import com.small.tools.network.internal.cache.CacheAction;
 import com.small.tools.network.internal.interfaces.HTTPCallback;
@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     int maxIndex = 3;
     int currIndex = 1;
 
-    Gson gson = new Gson();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         String url0 = "http://photocdn.sohu.com/20150917/Img421382005.jpg";
         String url1 = "http://ww1.sinaimg.cn/large/0065oQSqly1fswhaqvnobj30sg14hka0.jpg";
 
-        Configs.getSingleton().images().setCacheAction(CacheAction.None);
+//        Configs.getSingleton().images().setCacheAction(CacheAction.None);
         Configs.getSingleton().getCacheManager()
                 .setDiskCacheDirectory(getExternalFilesDir("SmallCache"));
 
@@ -61,50 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 .fail(getResources().getDrawable(R.drawable.shape_err))
                 .into(new ImagesActionImageView(local_iv));
 
-//        Images.get().loadFromDrawable(this, R.drawable.shape_err)
-//                .placeholder(getResources().getDrawable(R.drawable.shape_pre))
-//                .fail(getResources().getDrawable(R.drawable.shape_err))
-//                .into(new ImagesActionView(local_iv));
-
         Log.e("Https", "path " + getExternalFilesDir("SmallCaches").getPath());
         requestGankIODatas();
-//
-//
-//        testDownload();
 
-//        Https.createService(TestAPIProxy.class, TestAPI.class)
-//                .test(12, "params", new HTTPCallback() {
-//                    @Override
-//                    public void onPreStart(HTTPRequest request) {
-//                        Log.e("Test", "onPreStart param0 -> "+request.getParams().getInstance("param0"));
-//                        Log.e("Test", "onPreStart param1 -> "+request.getParams().getInstance("param1"));
-//                    }
-//
-//                    @Override
-//                    public void onProgress(HTTPResponse response, long cur, long total) {
-//                        Log.e("Test", "onProgress cur -> "+cur+" total -> "+total);
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(HTTPResponse response) {
-//                        Log.e("Test", "onSuccess");
-//                    }
-//
-//                    @Override
-//                    public void onCancel(HTTPRequest response) {
-//                        Log.e("Test", "onCancel");
-//                    }
-//
-//                    @Override
-//                    public void onFailure(HTTPResponse response) {
-//                        Log.e("Test", "onFailure -> "+response.getErrorMessage());
-//                    }
-//
-//                    @Override
-//                    public void onFinish(HTTPResponse response) {
-//                        Log.e("Test", "onFinish isSuccess -> "+response.isStatusCodeSuccessful());
-//                    }
-//                });
     }
 
     void requestGankIODatas() {
