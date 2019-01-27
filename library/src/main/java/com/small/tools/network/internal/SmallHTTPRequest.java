@@ -392,86 +392,96 @@ public class SmallHTTPRequest implements HTTPRequest {
             return mHTTPResponse;
         }
 
-        if (getRemoteResource() == null
-                || getResourceDataParser() == null) {
-            return mHTTPResponse;
-        }
+        try {
 
-        if (getHTTPCallback() != null) {
-            getHTTPCallback().onStart(this);
-        }
-
-        if (getCacheManager() != null
-                && getCacheManager().isCacheHit(this)) {
-            // cache check
-            getResourceDataParser().parse(this,
-                    getCacheManager().getCachedData(this));
-
-            if (isCanceled()
-                    || isFinished()) {
-
-            } else {
-                mHTTPResponse.setStatusCode(StatusCode.REQUEST_SUCCESS_FROM_CACHE);
-
-                if (getHTTPCallback() != null) {
-                    getHTTPCallback().onSuccess(this);
-                }
+            // not ready
+            if (getRemoteResource() == null
+                    || getResourceDataParser() == null) {
+                return mHTTPResponse;
             }
 
-        } else if (getResourceDataParser().getData() != null) {
-            // check if has parsed the data
-            if (isCanceled()
-                    || isFinished()) {
-
-            } else {
-                mHTTPResponse.setStatusCode(StatusCode.REQUEST_SUCCESS_FROM_PARSEDDATA);
-                if (getHTTPCallback() != null) {
-                    getHTTPCallback().onSuccess(this);
-                }
+            if (getHTTPCallback() != null) {
+                getHTTPCallback().onStart(this);
             }
 
-        } else if (getRemoteResource().getResourceStream() != null) {
-            // check if has a remote-resource-stream
-            InputStream resourceStream = getRemoteResource().getResourceStream();
+            // case cache hit
+            if (getCacheAction() != CacheAction.None
+                    && getCacheManager() != null
+                    && getCacheManager().isCacheHit(this)) {
+                // cache check
+                getResourceDataParser().parse(this,
+                        getCacheManager().getCachedData(this));
 
-            int statusCode = getResourceDataParser().parse(this, resourceStream);
+                if (isCanceled()
+                        || isFinished()) {
 
-            if (isCanceled()
-                    || isFinished()) {
-
-            } else {
-                mHTTPResponse.setStatusCode(statusCode);
-                if (StatusCode.isStatusCodeSuccessful(statusCode)) {
-                    mHTTPResponse.setStatusCode(StatusCode.REQUEST_SUCCESS_FROM_STREAM);
-                    try {
-                        mHTTPResponse.setContentLength(resourceStream.available());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                } else {
+                    mHTTPResponse.setStatusCode(StatusCode.REQUEST_SUCCESS_FROM_CACHE);
 
                     if (getHTTPCallback() != null) {
                         getHTTPCallback().onSuccess(this);
                     }
+                }
+
+                return mHTTPResponse;
+            }
+
+            // case resp-data has parsed
+            if (getResourceDataParser().getData() != null) {
+                // check if has parsed the data
+                if (isCanceled()
+                        || isFinished()) {
 
                 } else {
+                    mHTTPResponse.setStatusCode(StatusCode.REQUEST_SUCCESS_FROM_PARSEDDATA);
                     if (getHTTPCallback() != null) {
-                        getHTTPCallback().onFailure(this);
+                        getHTTPCallback().onSuccess(this);
                     }
-
                 }
+
+                return mHTTPResponse;
             }
 
-            try {
-                resourceStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            // case resp-inputstream not null
+            InputStream resourceStream = getRemoteResource().getResourceStream();
+            if (resourceStream != null) {
+                // check if has a remote-resource-stream
+
+                int statusCode = getResourceDataParser().parse(this, resourceStream);
+
+                if (isCanceled()
+                        || isFinished()) {
+
+                } else {
+                    mHTTPResponse.setStatusCode(statusCode);
+                    if (StatusCode.isStatusCodeSuccessful(statusCode)) {
+                        mHTTPResponse.setStatusCode(StatusCode.REQUEST_SUCCESS_FROM_STREAM);
+                        try {
+                            mHTTPResponse.setContentLength(resourceStream.available());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (getHTTPCallback() != null) {
+                            getHTTPCallback().onSuccess(this);
+                        }
+
+                    } else {
+                        if (getHTTPCallback() != null) {
+                            getHTTPCallback().onFailure(this);
+                        }
+
+                    }
+                }
+
+                return mHTTPResponse;
             }
-        } else {
+
             // request data from local/network
             // not support other
             switch (getRemoteResource().getResourceType()) {
                 case Local: {
-                    InputStream resourceStream = null;
+                    resourceStream = null;
                     try {
                         File file = new File(getRemoteResource().getResourceAddress());
                         resourceStream = new FileInputStream(file);
@@ -509,14 +519,6 @@ public class SmallHTTPRequest implements HTTPRequest {
 
                             if (getHTTPCallback() != null) {
                                 getHTTPCallback().onFailure(this);
-                            }
-                        }
-                    } finally {
-                        if (resourceStream != null) {
-                            try {
-                                resourceStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
                             }
                         }
                     }
@@ -574,11 +576,11 @@ public class SmallHTTPRequest implements HTTPRequest {
                     }
                 }
             }
+
+            return mHTTPResponse;
+        } finally {
+            finish();
         }
-
-        finish();
-
-        return mHTTPResponse;
     }
 
     @Override

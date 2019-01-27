@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
     void requestGankIODatas() {
         if (currIndex > maxIndex) {
-            Configs.getSingleton().setScheduler(new SchedulerImages());
 
             lv_images.post(new Runnable() {
                 @Override

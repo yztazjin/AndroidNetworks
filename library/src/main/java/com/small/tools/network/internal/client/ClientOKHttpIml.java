@@ -218,8 +218,8 @@ public class ClientOKHttpIml implements HTTPClient {
                     smallRequest.getResourceDataParser().parse(smallRequest, okhttp_resp.body().byteStream());
                 }
             }
-            // 关闭连接
-            okhttp_resp.close();
+
+            // 流关闭逻辑在Parser
         } catch (IOException e) {
             response.setStatusCode(StatusCode.PARSE_ERROR_IOEXCEPTION);
         }

@@ -44,6 +44,7 @@ public class SmallImagesRequest extends SmallHTTPRequest implements SmallImages 
         setCacheManager(Configs.getSingleton().images().getCacheManager());
         setCacheAction(Configs.getSingleton().images().getCacheAction());
         setHTTPClient(Configs.getSingleton().images().getHTTPClient());
+        setScheduler(Configs.getSingleton().images().getScheduler());
 
         HTTPCallback callback = new HTTPCallback() {
             @Override

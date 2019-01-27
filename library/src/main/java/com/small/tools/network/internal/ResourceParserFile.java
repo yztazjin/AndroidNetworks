@@ -94,16 +94,21 @@ public class ResourceParserFile implements ResourceDataParser<File> {
 
             statusCode = StatusCode.PARSE_ERROR_IOEXCEPTION;
         } finally {
-            if (fos != null) {
-                try {
+
+            try {
+                if (fos != null) {
                     fos.flush();
                     fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-
-                    statusCode = StatusCode.PARSE_ERROR_IOEXCEPTION;
                 }
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                statusCode = StatusCode.PARSE_ERROR_IOEXCEPTION;
             }
+
         }
 
         return statusCode;

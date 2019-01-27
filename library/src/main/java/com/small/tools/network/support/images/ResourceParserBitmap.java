@@ -43,10 +43,11 @@ public class ResourceParserBitmap implements ResourceDataParser<BitmapDrawable> 
         int statusCode = StatusCode.PARSE_SUCCESS;
 
         if (request.getRemoteResource().getResourceType() == RemoteResource.Type.Network) {
+            ByteArrayOutputStream baos = null;
             try {
                 HTTPCallback callback = request.getHTTPCallback();
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                baos = new ByteArrayOutputStream();
                 long totalLength = request.getResponse().getContentLength();
 
                 byte[] buffer = new byte[4096];
@@ -65,9 +66,6 @@ public class ResourceParserBitmap implements ResourceDataParser<BitmapDrawable> 
                     }
                 }
 
-                baos.flush();
-                baos.close();
-
                 if (statusCode == StatusCode.PARSE_SUCCESS) {
                     mParsedData = new BitmapDrawable(mBitmapDecoder.decode(baos.toByteArray(),
                             nWidth, nHeight));
@@ -76,6 +74,19 @@ public class ResourceParserBitmap implements ResourceDataParser<BitmapDrawable> 
                 ex.printStackTrace();
 
                 statusCode = StatusCode.PARSE_ERROR_IOEXCEPTION;
+            } finally {
+                try {
+                    if (baos != null) {
+                        baos.flush();
+                        baos.close();
+                    }
+
+                    if (is != null) {
+                        is.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             mParsedData = new BitmapDrawable(mBitmapDecoder.decode(is, nWidth, nHeight));

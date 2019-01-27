@@ -200,7 +200,7 @@ public class ClientApacheImpl implements HTTPClient {
                 }
             }
 
-            apache_resp.getEntity().getContent().close();
+            // 流关闭逻辑在Parser
         } catch (IOException e) {
             response.setStatusCode(StatusCode.PARSE_ERROR_IOEXCEPTION);
         }

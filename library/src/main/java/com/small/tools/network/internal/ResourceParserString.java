@@ -27,8 +27,9 @@ public class ResourceParserString implements ResourceDataParser<String> {
         long totalLength = request.getResponse().getContentLength();
         int statusCode = StatusCode.PARSE_SUCCESS;
 
+        ByteArrayOutputStream baos = null;
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[4096];
             int length = 0;
             while ((length = is.read(buffer)) != -1) {
@@ -45,8 +46,6 @@ public class ResourceParserString implements ResourceDataParser<String> {
                 }
             }
 
-            baos.flush();
-            baos.close();
 
             if (statusCode == StatusCode.PARSE_SUCCESS) {
                 strData = baos.toString();
@@ -55,6 +54,19 @@ public class ResourceParserString implements ResourceDataParser<String> {
             ex.printStackTrace();
 
             statusCode = StatusCode.PARSE_ERROR_IOEXCEPTION;
+        } finally {
+            try {
+                if (baos != null) {
+                    baos.flush();
+                    baos.close();
+                }
+
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return statusCode;
